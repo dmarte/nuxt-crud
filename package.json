@@ -1,0 +1,15 @@
+{
+  "name": "nuxt-laracrud",
+  "version": "1.0.0",
+  "description": "A package to create easy CRUD operations handled by Laravel APPS.",
+  "main": "module.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Delvi Marte <delvi.marte@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "pluralize": "^8.0.0"
+  }
+}
