@@ -3,11 +3,17 @@
   "version": "1.0.0",
   "description": "A package to create easy CRUD operations handled by Laravel APPS.",
   "main": "module.js",
+  "keywords": ["crud", "nuxt", "laravel", "api", "ui", "index","create","update"],
+  "homepage": "https://github.com/dmarte/nuxt-crud#nuxt-crud",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dmarte/nuxt-crud.git"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Delvi Marte <delvi.marte@gmail.com>",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "lodash": "^4.17.21",
     "pluralize": "^8.0.0"
