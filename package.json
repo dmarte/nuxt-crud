@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-laracrud",
+  "name": "@dmarte/nuxt-laracrud",
   "version": "1.0.0",
   "description": "A package to create easy CRUD operations handled by Laravel APPS.",
   "main": "module.js",
