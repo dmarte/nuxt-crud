@@ -1,7 +1,8 @@
 {
-  "name": "@dmarte/nuxt-laracrud",
+  "name": "@dmarte/nuxt-crud",
+  "private": false,
   "version": "1.0.0",
-  "description": "A package to create easy CRUD operations handled by Laravel APPS.",
+  "description": "NuxtJS module to generate CRUD screens within seconds.",
   "main": "module.js",
   "keywords": ["crud", "nuxt", "laravel", "api", "ui", "index","create","update"],
   "homepage": "https://github.com/dmarte/nuxt-crud#nuxt-crud",
@@ -9,8 +10,8 @@
     "type": "git",
     "url": "git://github.com/dmarte/nuxt-crud.git"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "publishConfig": {
+    "registry":"https://npm.pkg.github.com"
   },
   "author": "Delvi Marte <delvi.marte@gmail.com>",
   "license": "MIT",
