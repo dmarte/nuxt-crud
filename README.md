@@ -51,6 +51,17 @@ Install via package.json:
 }
 ```
 
+### Install the module on Nuxt
+```javascript
+// in your nuxt.config.js
+{
+  modules: [
+    // ...
+    '@dmarte/nuxt-crud'
+  ]
+}
+```
+
 ### Extend the router
 Now it's time to extend your routes to fetch the modules.
 

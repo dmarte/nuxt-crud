@@ -21,7 +21,7 @@
 
 <script>
 import fields from '../../mixins/field'
-import rules from '~/mixins/rules'
+import rules from '../../mixins/rules'
 export default {
   name: 'CFieldRules',
   mixins: [fields, rules],
