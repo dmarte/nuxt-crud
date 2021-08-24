@@ -61,7 +61,7 @@ Now it's time to extend your routes to fetch the modules.
       extendRoutes: (routes, resolve) => {
       routes.push({
         path: '/c/:module',
-        component: resolve(__dirname, 'node_modules/nuxt-crud/pages/index'),
+        component: resolve(__dirname, 'node_modules/@dmarte/nuxt-crud/pages/index'),
         props: {
           module: route => route.params.module
         },
@@ -69,7 +69,7 @@ Now it's time to extend your routes to fetch the modules.
           {
             path: '',
             name: 'crud-module-collection',
-            component: resolve(__dirname, 'node_modules/nuxt-crud/pages/collection')
+            component: resolve(__dirname, 'node_modules//@dmarte/nuxt-crud/pages/collection')
           }
         ]
       })
