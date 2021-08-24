@@ -1,7 +1,7 @@
 {
   "name": "@dmarte/nuxt-crud",
   "private": false,
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "NuxtJS module to generate CRUD screens within seconds.",
   "main": "module.js",
   "keywords": ["crud", "nuxt", "laravel", "api", "ui", "index","create","update"],

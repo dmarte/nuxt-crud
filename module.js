@@ -1,5 +1,6 @@
 import { resolve, join } from 'path'
 import messenger from './store/messenger'
+import breadcrumbs from './store/breadcrumbs'
 
 export default function (options) {
   const settings = Object.assign(
@@ -16,6 +17,7 @@ export default function (options) {
       modules: settings.modules.map((module) => module.toObject()),
       store: {
         messenger,
+        breadcrumbs
       },
     },
   })
