@@ -77,6 +77,11 @@ export default {
     mapHeadToField(head) {
       return head
     },
+    /**
+     *
+     * @param {Object} field
+     * @returns {any}
+     */
     getFieldDefaultValue(field) {
       if (!field || !field.settings) {
         return null

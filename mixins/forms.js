@@ -97,7 +97,7 @@ export default {
       if (!module) {
         return 'id'
       }
-      return  module.primraryKey || 'id'
+      return  module.primaryKey || 'id'
     },
     /**
      * This method allow you to get
