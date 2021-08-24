@@ -224,3 +224,20 @@ export default {
 Crud will try to find a translation label for a given field name located at `attributes.${fieldName}` or `custom.${module}.${fieldName}` or by default the name of the field itself.
 
 That's why you can choose to only set the name of your field, then add the corresponding translation using `vue-i18n` plugin.
+
+#### Module translations
+
+You can translate the title used for module if you create the key in your translation file using the following convention:
+`module.title.${module}`. 
+
+Also, you can set the `singular` and `plural` form of the module using pipe `|` divisor.
+
+```json
+{
+  "module": {
+    "title": {
+      "fields" : "Campos adicionales|Campo adicional"
+    }
+  }
+}
+```
