@@ -153,7 +153,42 @@ import CrudModule from '@dmarte/nuxt-crud/libs/CrudModule'
         // Key-Value field type
         // this field will sent a JSON object {<key> : <value>} to the server
         // with the given field name.
-        .field(new CrudFieldKeyValue('key_value_field')),
+        .field(new CrudFieldKeyValue('key_value_field'))
+        // Field type textarea
+        .field(new CrudFieldTextarea('text_area_name'))
+        // Field select for remote fetching
+        .field(
+          // Create a selector that fill its content from an API endpoint
+          new CrudFieldSelectRemote('services')
+            // Define the origin to fetch the data
+            .origin('services')
+            // Set the path where should take the text label for each option.
+            .mapTextFrom('name')
+            // Set the path where should take the value for each option.
+            .mapValueFrom('id')
+            // How many items per page should be displayed
+            .perPage(10)
+            // Add any additional custom query string needed in the fetch request
+            // in a form of JSON object
+            // PLEASE NOTICE that the following JSON object is just an example on what you can do.
+            .query({ paginator: false })
+            // Set a dynamic parameter that should be taken from Vuex State.
+            .queryFromVuexState(
+              // First the name of the key that should be send to the API
+              'user_id',
+              // Now the vuex state path as dot notation
+              'auth.user.data.id'
+            )
+            .queryFromVuexGetter(
+              // First the name of the key that should be send to the API
+              'kind',
+              // Next the vuex getter path to be used
+              'service/KINDS'
+            )
+            // If your response is wrapped into a property of the response
+            // you can set the path to get the collection here
+            .mapResponse('data')
+        )
     ]
   }
 }
@@ -185,7 +220,7 @@ export default class MyCustomField extends CrudField {
 import CrudModule from '@dmarte/nuxt-crud/libs/CrudModule'
 {
   modules: [
-    new CrudModule('my-custom-module').file(new MyCustomField('field_name')),
+    new CrudModule('my-custom-module').field(new MyCustomField('field_name')),
   ]
 }
 ```
@@ -241,3 +276,18 @@ Also, you can set the `singular` and `plural` form of the module using pipe `|` 
   }
 }
 ```
+#### Form translations
+To translate the title of the form you must have the keys in your translation files as following:
+```json
+{
+  "module": {
+    "actions": {
+      "edit": "Edit {resource}",
+      "create": "Create {resource}"
+    }
+  }
+}
+```
+> Please note that `{resource}` is a placeholder that hold the `singular` form of the module name.
+> 
+> Eg. "`Edit {resource}`" will be "`Edit field`" when updating and "`Create resource`" when creating.

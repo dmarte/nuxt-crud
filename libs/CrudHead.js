@@ -58,7 +58,7 @@ export default class CrudHead {
           rules: [],
           items: [],
           hooks: [],
-          params: [],
+          params: {},
           min_value: null,
           max_value: null,
         },

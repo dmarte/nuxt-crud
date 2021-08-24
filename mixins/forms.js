@@ -8,7 +8,7 @@ export default {
     title: {
       type: String,
       default() {
-        const key = this.isUpdating ? 'Edit resource' : 'New resource'
+        const key = this.isUpdating ? 'module.actions.edit' : 'module.actions.create'
         const resource = this.$te(`module.title.${this.module}`)
           ? this.$tc(`module.title.${this.module}`, 1)
           : this.module
