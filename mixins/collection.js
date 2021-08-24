@@ -256,7 +256,7 @@ export default {
       this.fetching = true
       try {
         const response = await this.$axios.$get(
-          `/api/${this.plural(this.module)}`,
+          `${this.$crud.api.prefix}${this.plural(this.module)}`,
           {
             params: {
               ...this.getQueryString(),

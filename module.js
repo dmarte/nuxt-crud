@@ -5,6 +5,9 @@ import breadcrumbs from './store/breadcrumbs'
 export default function (options) {
   const settings = Object.assign(
     {
+      api: {
+        prefix: '/api/'
+      },
       modules: [],
     },
     this.options.crud || {},
@@ -15,6 +18,7 @@ export default function (options) {
     src: resolve(__dirname, 'plugin.js'),
     options: {
       modules: settings.modules.map((module) => module.toObject()),
+      api: settings.api,
       store: {
         messenger,
         breadcrumbs

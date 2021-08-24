@@ -108,7 +108,11 @@ To define a module you must create an instance of `CrudModule` class.
     modules: [
       // Register the module "fields"
       new CrudModule('fields'),
-    ]
+    ],
+    api: {
+      // This prefix will be prepended to all endpoints
+      prefix: '/api/'
+    }
   }
 }
 ```

@@ -131,7 +131,7 @@ export default {
       )
     },
     getModuleUrl() {
-      return `/api/${this.plural(this.module)}`
+      return `${this.$crud.api.prefix}${this.plural(this.module)}`
     },
     getModuleUrlStore() {
       return this.getModuleUrl()

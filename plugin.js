@@ -1,6 +1,6 @@
 const settings = Object.assign(
   {},
-  JSON.parse('<%=JSON.stringify({ modules: options.modules })%>'),
+  JSON.parse('<%=JSON.stringify({ modules: options.modules, api: options.api })%>'),
   {}
 )
 
