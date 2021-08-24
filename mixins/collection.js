@@ -31,8 +31,8 @@ export default {
       return this.$route.query.search || null
     },
     getQuerySortBy() {
-      if (this.$route.query?.sort_by) {
-        return this.$route.query?.sort_by
+      if (this.$route.query.sort_by) {
+        return this.$route.query.sort_by
       }
       if (this.defaultSortBy) {
         return this.defaultSortBy
@@ -40,17 +40,17 @@ export default {
       return 'id'
     },
     getQuerySortDesc() {
-      if (this.$route.query?.sort_desc) {
-        return String(this.$route.query?.sort_desc) === 'true'
+      if (this.$route.query.sort_desc) {
+        return String(this.$route.query.sort_desc) === 'true'
       }
 
       return this.defaultSortDesc || true
     },
     getQueryPerPage() {
-      return parseInt(this.$route.query?.per_page || 15)
+      return parseInt(this.$route.query.per_page || 15)
     },
     getQueryCurrentPage() {
-      return parseInt(this.$route.query?.current_page || 1)
+      return parseInt(this.$route.query.current_page || 1)
     },
     getQueryString() {
       return {
@@ -191,7 +191,7 @@ export default {
      */
     destroyed(item) {
       this.collection = this.collection.filter(
-        (element) => element?.id !== item?.id
+        (element) => element.id !== item.id
       )
       this.$emit('destroy:success', item)
       this.success(this.$t('Resource deleted'))
@@ -267,8 +267,8 @@ export default {
             cancelToken: this.cancelToken.token
           }
         )
-        this.meta.total = response?.meta?.total || 0
-        this.meta.lastPage = response?.meta?.last_page || 0
+        this.meta.total = response.meta.total || 0
+        this.meta.lastPage = response.meta.last_page || 0
         this.collection = response.data.map(this.merge)
       } catch (exception) {
         if (this.$axios.isCancel(exception)) {

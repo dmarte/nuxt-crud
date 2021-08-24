@@ -19,7 +19,7 @@ export default {
   mixins: [fields],
   computed: {
     head() {
-      return this.params?.head || {}
+      return this.params.head || {}
     },
   },
 }

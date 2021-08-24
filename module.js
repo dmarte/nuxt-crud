@@ -6,7 +6,7 @@ export default function (options) {
     {
       modules: [],
     },
-    this.options?.crud,
+    this.options.crud || {},
     options
   )
   // Register the base plugin
