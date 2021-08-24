@@ -278,7 +278,29 @@ export default class CrudHead {
    * @returns {CrudHead}
    */
   value(value) {
-    this.$options.value = value
+    this.$options.settings.value = value
+    return this
+  }
+
+  /**
+   * Get the value from a given vuex state.
+   *
+   * @param {String} statePath
+   * @returns {CrudHead}
+   */
+  valueFromVuexState(statePath) {
+    this.$options.settings.valueState = statePath
+    return this
+  }
+
+  /**
+   * Get the value from a given vuex state.
+   *
+   * @param {String} getterPath
+   * @returns {CrudHead}
+   */
+  valueFromVuexGetter(getterPath) {
+    this.$options.settings.valueGetter = getterPath
     return this
   }
 

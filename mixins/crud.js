@@ -73,6 +73,18 @@ export default {
     mapHeadToField(head) {
       return head
     },
+    getFieldDefaultValue(field) {
+      if (!field || !field.settings) {
+        return null
+      }
+      if (field.settings.valueState) {
+        return _.get(this.$store.state, field.settings.valueState, field.settings.value)
+      }
+      if (field.settings.valueGetter) {
+        return _.get(this.$store.state, field.settings.valueGetter, field.settings.value)
+      }
+      return field.settings.value
+    },
     getModuleData(module) {
       return this.$crud.modules.find(({name}) => name === module)
     },

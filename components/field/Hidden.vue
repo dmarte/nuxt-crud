@@ -1,5 +1,5 @@
 <template>
-  <input type='hidden' :value='value' />
+  <div />
 </template>
 
 <script>
@@ -7,7 +7,10 @@ import field from '../../mixins/field'
 
 export default {
   name: 'CFieldHidden',
-  mixins: [field]
+  mixins: [field],
+  mounted() {
+    this.whenChange(this.value)
+  }
 }
 </script>
 

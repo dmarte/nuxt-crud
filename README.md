@@ -143,11 +143,26 @@ import CrudModule from '@dmarte/nuxt-crud/libs/CrudModule'
         .field(new CrudFieldText('name'))
         // Select type with the collection of options available
         .field(
-          new CrudFieldSelect('items').options([{ value: 'val', text: 'label' }])
+          new CrudFieldSelect('items')
+            .options([{ 
+              value: 'val',
+              // NOTE: If you want your "text" value be translated
+              // you can specify the translation key here and the module 
+              // will translate that label
+              text: 'label' 
+            }])
         )
         // A hidden (or fixed) value that should by sent to the server but not show any
         // field on the form view
         .field(new CrudFieldHidden('hidden_value').value(1))
+        .field(
+          // Define a field (could by any kind of field)
+          new CrudFieldHidden('user_id')
+            // Set the default value from a vuex state
+            .valueFromVuexState('auth.user.data.id')
+            // or set the value from a vuex getter
+            .valueFromVuexGetter('service/KIND_GENERIC')
+        )
         // Numeric field
         .field(new CrudFieldNumber('amount').value(0))
         // Key-Value field type

@@ -9,7 +9,7 @@
           <c-ui-field-render
             v-if="visible(field)"
             :key="`field_${index}`"
-            :value="getValuePath(field.name, field.settings.value)"
+            :value="getValuePath(field.name, getFieldDefaultValue(field))"
             :component='field.component'
             :label='getTranslation(field.label)'
             :placeholder='field.placeholder'
@@ -17,6 +17,7 @@
             :hint='field.hint'
             :min='field.settings.min_value'
             :max='field.settings.max_value'
+            :settings='field.settings'
             :params='field.settings.params'
             :persistent-hint='field.settings.persistent_hint'
             :persistent-placeholder='field.settings.persistent_placeholder'
