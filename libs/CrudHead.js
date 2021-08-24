@@ -1,39 +1,117 @@
 export default class CrudHead {
   /**
-   * @param {Object} options
+   * @param {{
+        settings: {
+          visibility: {
+            creating: <Boolean>,
+            updating: <Boolean>,
+            index: <Boolean>,
+            detail: <Boolean>,
+            when_field_name: <String?>,
+            when_field_value: <String?>,
+          },
+          readonly: <Boolean>,
+          value: <String|Array|Object>,
+          append_icon: <String?>,
+          prepend_icon: <String?>,
+          clearable: <Boolean>,
+          dense: <Boolean>,
+          persistent_hint: <Boolean>,
+          persistent_placeholder: <Boolean>,
+          rules: <Array>,
+          items: <Array>,
+          hooks: <Array>,
+          params: <Array>,
+          min_value: <String?>,
+          max_value: <String?>,
+        },
+        label: <String>,
+        component: <String>,
+        type: <String?>,
+        name: <String?>,
+        placeholder: <String?>,
+        hint: <String?>,
+        enabled: <boolean>,
+      }} options
    */
   constructor(options) {
     this.$options = Object.assign(
       {
-        visibility: {
-          creating: true,
-          updating: true,
-          index: true,
-          detail: false,
+        settings: {
+          visibility: {
+            creating: true,
+            updating: true,
+            index: true,
+            detail: false,
+            when_field_name: null,
+            when_field_value: null,
+          },
+          sortable: false,
+          readonly: false,
+          value: null,
+          append_icon: null,
+          prepend_icon: null,
+          clearable: false,
+          dense: false,
+          persistent_hint: false,
+          persistent_placeholder: false,
+          rules: [],
+          items: [],
+          hooks: [],
+          params: [],
+          min_value: null,
+          max_value: null,
         },
-        label: undefined,
-        name: undefined,
-        sortable: false,
+        label: null,
         component: CrudHead.FIELD_TYPE_TEXT,
-        disabled: false,
-        readonly: false,
-        value: undefined,
-        options: [],
+        type: null,
+        name: null,
+        placeholder: null,
+        hint: null,
+        enabled: true,
       },
       options
     )
   }
 
+  /**
+   * Component name for field texts.
+   *
+   * @returns {string}
+   * @constructor
+   */
   static get FIELD_TYPE_TEXT() {
     return 'CFieldText'
   }
 
+  /**
+   * Display mode used to represent the index state.
+   *
+   * NOTE: This is used as suffix for field components.
+   * @returns {string}
+   * @constructor
+   */
   static get DISPLAY_MODE_INDEX() {
     return 'Index'
   }
+  /**
+   * Display mode used to represent the form state.
+   *
+   * NOTE: This is used as suffix for field components.
+   * @returns {string}
+   * @constructor
+   */
   static get DISPLAY_MODE_FORM() {
     return 'Form'
   }
+
+  /**
+   * Display mode used to represent the detail state.
+   *
+   * NOTE: This is used as suffix for field components.
+   * @returns {string}
+   * @constructor
+   */
   static get DISPLAY_MODE_DETAIL() {
     return 'Detail'
   }
@@ -43,7 +121,7 @@ export default class CrudHead {
    * @returns {CrudHead}
    */
   hideOnIndex() {
-    this.$options.visibility.index = false
+    this.$options.settings.visibility.index = false
     return this
   }
 
@@ -52,7 +130,7 @@ export default class CrudHead {
    * @returns {CrudHead}
    */
   hideWhenCreating() {
-    this.$options.visibility.creating = false
+    this.$options.settings.visibility.creating = false
     return this
   }
 
@@ -61,7 +139,7 @@ export default class CrudHead {
    * @returns {CrudHead}
    */
   hideWhenUpdating() {
-    this.$options.visibility.updating = false
+    this.$options.settings.visibility.updating = false
     return this
   }
 
@@ -70,7 +148,7 @@ export default class CrudHead {
    * @returns {CrudHead}
    */
   hideOnDetail() {
-    this.$options.visibility.detail = false
+    this.$options.settings.visibility.detail = false
     return this
   }
 
@@ -84,13 +162,63 @@ export default class CrudHead {
   }
 
   /**
-   * Hide this field when a given condition occurs.
-   *
-   * @param {Function} callback
+   * Show a given field only on form page.
    * @returns {CrudHead}
    */
-  hideWhen(callback) {
-    this.$options.condition = callback
+  onlyOnForms() {
+    this.hideOnIndex().hideOnDetail()
+    this.$options.settings.visibility.creating = true
+    this.$options.settings.visibility.updating = true
+    return this
+  }
+
+  /**
+   * Show only when creating.
+   * @returns {CrudHead}
+   */
+  onlyWhenCreating() {
+    this.hideOnIndex().hideOnDetail().hideWhenUpdating()
+    this.$options.settings.visibility.creating = true
+    return this
+  }
+
+  /**
+   * Show only when creating.
+   * @returns {CrudHead}
+   */
+  onlyWhenUpdating() {
+    this.hideOnIndex().hideOnDetail().hideWhenCreating()
+    this.$options.settings.visibility.updating = true
+    return this
+  }
+
+  /**
+   * Show a given field only on detail pay.
+   * @returns {CrudHead}
+   */
+  onlyOnDetail() {
+    this.hideOnIndex().hideWhenCreating().hideWhenUpdating()
+    this.$options.settings.visibility.detail = true
+    return this
+  }
+
+  /**
+   * Set the field
+   * @param {Boolean} enabled
+   * @returns {CrudHead}
+   */
+  dense(enabled = true) {
+    this.$options.settings.dense = enabled
+    return this
+  }
+
+  /**
+   * Set the field
+   * @param {Boolean} enabled
+   * @returns {CrudHead}
+   */
+  clearable(enabled = true) {
+    this.$options.settings.clearable = enabled
     return this
   }
 
@@ -131,7 +259,7 @@ export default class CrudHead {
    * @returns {CrudHead}
    */
   sortable() {
-    this.$options.sortable = true
+    this.$options.settings.sortable = true
     return this
   }
 

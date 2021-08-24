@@ -49,6 +49,27 @@ export default {
   },
   methods: {
     /**
+     * Get the translation label.
+     * @param {String} label
+     * @returns {String}
+     */
+    getTranslation(label) {
+      if (this.$te(`attributes.${label}`)) {
+        return this.$tc(`attributes.${label}`, 1).toString()
+      }
+
+      if (this.$te(`custom.${this.module}.${label}`)) {
+        return this.$tc(`custom.${this.module}.${label}`, 1).toString()
+      }
+
+      if (this.$te(label)) {
+        return this.$t(label).toString()
+      }
+
+
+      return label
+    },
+    /**
      * Get a value from model or form value path.
      * @param {String} path
      * @param {String|Array|Object|Number|undefined} defaults

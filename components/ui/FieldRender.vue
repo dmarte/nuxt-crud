@@ -16,7 +16,7 @@ export default {
       },
     },
     value: {
-      type: [Array, Object, String, Number],
+      type: [Array, Object, String, Number, Boolean],
       default: null
     },
     component: {

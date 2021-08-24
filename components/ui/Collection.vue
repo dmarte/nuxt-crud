@@ -204,12 +204,12 @@ export default {
         {
           text: '',
           value: '_',
-          width: 80,
           sortable: false,
           filterable: false,
           groupable: false,
           divider: false,
-          align: 'end'
+          align: 'end',
+          cellClass: 'text-right'
         }
       ]
     }

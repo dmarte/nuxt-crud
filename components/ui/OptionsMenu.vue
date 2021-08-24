@@ -81,7 +81,7 @@
             </v-list-item-title>
           </v-list-item>
         </template>
-        <ui-delete-confirmation
+        <c-ui-delete-confirmation
           :busy="deleting"
           @cancel="
             () => {

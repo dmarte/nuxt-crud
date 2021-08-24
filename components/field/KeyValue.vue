@@ -2,10 +2,12 @@
   <v-data-table
     :headers="headers"
     :items="value"
-    class='no-table-hover'
+    class="no-table-hover"
     mobile-breakpoint="md"
     no-data-text=""
     no-results-text=""
+    single-select
+    show-select
     dense
     disable-pagination
     disable-sort
@@ -15,6 +17,11 @@
     calculate-widths
   >
     <template #no-results></template>
+    <template #item.data-table-select="{ index }">
+      <v-btn icon @click.prevent="remove(index)">
+        <v-icon> mdi-trash-can-outline </v-icon>
+      </v-btn>
+    </template>
     <template #top>
       <v-subheader class="px-0 py-0 v-label">{{ label }}</v-subheader>
       <v-alert v-if="response.feedback(name)" type="error" dense text>
@@ -58,6 +65,12 @@ import field from '../../mixins/field'
 export default {
   name: 'CFieldKeyValue',
   mixins: [field],
+  props: {
+    value: {
+      type: Array,
+      default: () => [],
+    },
+  },
   computed: {
     headers() {
       return [
@@ -77,6 +90,9 @@ export default {
       const values = [...this.value]
       values.splice(index, 1, item)
       this.whenChange(values)
+    },
+    remove(index) {
+      this.whenChange(this.value.filter((ob, i) => index !== i))
     },
     add() {
       this.whenChange([

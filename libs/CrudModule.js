@@ -44,6 +44,7 @@ export default class CrudModule {
     if (!field instanceof CrudField) {
       throw new Error('The field should be an instance of CrudHead object.')
     }
+    field.dense(this.$options.dense)
     this.$options.head.push(field)
     return this
   }

@@ -1,9 +1,9 @@
-import OgResponse from '../libs/CrudResponse'
+import CrudResponse from '../libs/CrudResponse'
 
 export default {
   props: {
     value: {
-      type: [String, Number, Boolean, Array, Object],
+      type: [String, Number, Boolean, Array, Object, Boolean],
       default: null
     },
     id: {
@@ -35,7 +35,7 @@ export default {
       default: false
     },
     response: {
-      type: OgResponse,
+      type: CrudResponse,
       required: true
     }
   },

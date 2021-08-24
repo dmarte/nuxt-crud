@@ -45,7 +45,6 @@ export default {
       const out = {}
       this.fields.forEach((field) => {
         if (!this.visible(field)) { return }
-        console.log(field.name)
         _.set(out, field.name, _.get(this.value, field.name, field.value))
       })
       return out
@@ -80,17 +79,17 @@ export default {
     visible(field) {
       switch (this.getDisplayMode()) {
         case this.DISPLAY_MODE_FORM:
-          if (this.isUpdating && !field.visibility.updating) {
+          if (this.isUpdating && !field.settings.visibility.updating) {
             return false
           }
-          if (this.isCreating && !field.visibility.creating) {
+          if (this.isCreating && !field.settings.visibility.creating) {
             return false
           }
           break
         case this.DISPLAY_MODE_INDEX:
-          return field.visibility.index
+          return field.settings.visibility.index
         case this.DISPLAY_MODE_DETAIL:
-          return field.visibility.detail
+          return field.settings.visibility.detail
       }
       return true
     },

@@ -190,7 +190,6 @@ export default {
      * @returns {void}
      */
     destroyed(item) {
-      console.log(item.id, 'COLLECTION_DESTROYED')
       this.collection = this.collection.filter(
         (element) => element?.id !== item?.id
       )

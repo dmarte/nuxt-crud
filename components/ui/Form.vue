@@ -7,13 +7,26 @@
       <v-card-text>
         <template v-for="(field, index) in fields">
           <c-ui-field-render
-            v-bind="field"
             v-if="visible(field)"
             :key="`field_${index}`"
-            :value="getValuePath(field.name, field.value)"
+            :value="getValuePath(field.name, field.settings.value)"
+            :component='field.component'
+            :label='getTranslation(field.label)'
+            :placeholder='field.placeholder'
+            :type='field.type'
+            :hint='field.hint'
+            :min='field.settings.min_value'
+            :max='field.settings.max_value'
+            :params='field.settings.params'
+            :persistent-hint='field.settings.persistent_hint'
+            :persistent-placeholder='field.settings.persistent_placeholder'
+            :clearable='field.settings.clearable'
+            :dense='field.settings.dense'
+            :readonly='field.settings.readonly'
+            :items='field.settings.items'
             :module="module"
             :response="response"
-            :disabled="field.disabled || processing"
+            :disabled="!field.enabled || processing"
             :display-mode="getDisplayMode()"
             @input="
               (v) => {
