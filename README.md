@@ -38,7 +38,7 @@ This module has a big dependency on many other modules to render the UI, below y
 Install from the command line:
 
 ```shell
-npm install @dmarte/nuxt-crud
+npm install dmarte/nuxt-crud
 ```
 
 Install via package.json:
@@ -46,7 +46,7 @@ Install via package.json:
 ```json
 {
   "dependencies": {
-    "@dmarte/nuxt-crud": "1.0.0"
+    "dmarte/nuxt-crud": "1.0.0"
   }
 }
 ```
@@ -63,7 +63,7 @@ Now it's time to extend your routes to fetch the modules.
         path: '/c/:module',
         component: resolve(__dirname, 'node_modules/nuxt-crud/pages/index'),
         props: {
-          module: route => route.prams.module
+          module: route => route.params.module
         },
         children: [
           {
@@ -93,10 +93,12 @@ To define a module you must create an instance of `CrudModule` class.
 ```javascript
 // In your nuxt.config.js
 {
-  modules: [
-    // Register the module "fields"
-    new CrudModule('fields'),
-  ]
+  crud: {
+    modules: [
+      // Register the module "fields"
+      new CrudModule('fields'),
+    ]
+  }
 }
 ```
 
@@ -105,37 +107,40 @@ To define a module you must create an instance of `CrudModule` class.
 ### Add fields to your modules
 
 Fields represent the `input` schema that define how the data abstracted and displayed within the different UI views (index, forms and detail pages).
-
+> Don't forgot to import your needed classes.
 ```javascript
+import CrudModule from '@dmarte/nuxt-crud/libs/CrudModule'
 {
   // In your nuxt.config.js
-  modules: [
-    // Register the module "fields"
-    new CrudModule('fields')
-      // Add a new field type ID
-      .field(
-        // The class that define the field type
-        new CrudFieldId(
-          // The name of the field that will be sended to the API
-          'id'
+  crud: {
+    modules: [
+      // Register the module "fields"
+      new CrudModule('fields')
+        // Add a new field type ID
+        .field(
+          // The class that define the field type
+          new CrudFieldId(
+            // The name of the field that will be sended to the API
+            'id'
+          )
         )
-      )
-      // Add multiple field types chained
-      .field(new CrudFieldText('name'))
-      // Select type with the collection of options available
-      .field(
-        new CrudFieldSelect('items').options([{ value: 'val', text: 'label' }])
-      )
-      // A hidden (or fixed) value that should by sent to the server but not show any
-      // field on the form view
-      .field(new CrudFieldHidden('hidden_value').value(1))
-      // Numeric field
-      .field(new CrudFieldNumber('amount').value(0))
-      // Key-Value field type
-      // this field will sent a JSON object {<key> : <value>} to the server
-      // with the given field name.
-      .field(new CrudFieldKeyValue('key_value_field')),
-  ]
+        // Add multiple field types chained
+        .field(new CrudFieldText('name'))
+        // Select type with the collection of options available
+        .field(
+          new CrudFieldSelect('items').options([{ value: 'val', text: 'label' }])
+        )
+        // A hidden (or fixed) value that should by sent to the server but not show any
+        // field on the form view
+        .field(new CrudFieldHidden('hidden_value').value(1))
+        // Numeric field
+        .field(new CrudFieldNumber('amount').value(0))
+        // Key-Value field type
+        // this field will sent a JSON object {<key> : <value>} to the server
+        // with the given field name.
+        .field(new CrudFieldKeyValue('key_value_field')),
+    ]
+  }
 }
 ```
 
@@ -162,6 +167,7 @@ export default class MyCustomField extends CrudField {
 }
 
 // nuxt.config.js
+import CrudModule from '@dmarte/nuxt-crud/libs/CrudModule'
 {
   modules: [
     new CrudModule('my-custom-module').file(new MyCustomField('field_name')),

@@ -25,10 +25,10 @@ export default {
   },
   methods: {
     /**
-     * @returns {String}
+     * @returns {String?}
      */
     getQuerySearch() {
-      return this.$route.query?.search || ''
+      return this.$route.query.search || null
     },
     getQuerySortBy() {
       if (this.$route.query?.sort_by) {
