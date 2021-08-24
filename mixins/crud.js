@@ -57,8 +57,12 @@ export default {
      * @returns {{text, value}}
      */
     mapHeadToTableHeader(head) {
+      let text = this.$te(`attributes.${head.name}`) ? this.$t(`attributes.${head.name}`) : head.name
+      if (this.$te(`custom.${this.module}.${head.name}`)) {
+        text = this.$t(`custom.${this.module}.${head.name}`)
+      }
       return {
-        text: this.$te(`attributes.${head.name}`) ? this.$t(`attributes.${head.name}`) : head.name,
+        text: text,
         value: head.name,
         sortable: head.sortable
       }

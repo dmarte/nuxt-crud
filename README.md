@@ -253,7 +253,7 @@ Then after in your `.vue` component file make sure to extend the component to us
   />
 </template>
 <script>
-import field from 'nuxt-crud/mixins/field'
+import field from '@dmarte/nuxt-crud/mixins/field'
 
 export default {
   name: 'MyCustomVueComponent',

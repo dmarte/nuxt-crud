@@ -93,7 +93,11 @@ export default {
      * @returns {string}
      */
     getPrimaryKeyName() {
-      return  'id'
+      const module = this.$crud.modules.find(({name}) => name === this.module)
+      if (!module) {
+        return 'id'
+      }
+      return  module.primraryKey || 'id'
     },
     /**
      * This method allow you to get

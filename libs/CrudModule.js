@@ -19,6 +19,7 @@ export default class CrudModule {
         dense: false,
         fullscreen: false,
         form: undefined,
+        primaryKey: 'id',
         head: [],
       },
       options
@@ -31,6 +32,16 @@ export default class CrudModule {
    */
   fullscreen() {
     this.$options.fullscreen = true
+    return this
+  }
+
+  /**
+   * Set the primary key for the.
+   * @param {String} name
+   * @returns {CrudModule}
+   */
+  primaryKey(name) {
+    this.$options.primaryKey = name
     return this
   }
 
