@@ -46,7 +46,7 @@ Install via package.json:
 ```json
 {
   "dependencies": {
-    "dmarte/nuxt-crud": "1.0.0"
+    "@dmarte/nuxt-crud": "github:dmarte/nuxt-crud"
   }
 }
 ```
