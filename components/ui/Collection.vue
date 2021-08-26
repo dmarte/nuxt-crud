@@ -5,6 +5,7 @@
       <v-spacer />
       <v-dialog
         ref='create'
+        v-model='modalCreateOpened'
         :fullscreen='formFullscreen'
         :max-width='formWidth'
         eager
@@ -26,6 +27,7 @@
           </v-btn>
         </template>
         <component
+          v-if='modalCreateOpened'
           :is='formName'
           :formName='formName'
           :value='schema'
@@ -117,7 +119,6 @@
 </template>
 
 <script>
-import pluralize from 'pluralize'
 import collection from '../../mixins/collection'
 
 export default {
@@ -185,6 +186,11 @@ export default {
   },
   async fetch() {
     await this.collect()
+  },
+  data() {
+    return {
+      modalCreateOpened: false
+    }
   },
   computed: {
     busy() {

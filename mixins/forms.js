@@ -66,7 +66,6 @@ export default {
         return this.$t(label).toString()
       }
 
-
       return label
     },
     /**

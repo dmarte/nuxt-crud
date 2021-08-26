@@ -269,6 +269,33 @@ export default {
 >
 > Also the method `whenChange` should be used to notify the render engine that field was changed.
 
+# Visibility
+You can control the field visibility in different scenarios.
+```javascript
+// In your nuxt.config.js
+{
+  crud: {
+    modules: [
+      new CrudModule('fields')
+        // Here component is the parent module that will 
+        .field(
+          new CrudFieldSelect('component')
+            // Define the possible values
+          .options([{value: 'one', text: 'Value One'}, {value: 'two', text: 'Value Two'}, {value: 'three', text: 'Value three'}])
+        )
+        // Next create any type of field (in this case we use the field text)
+        .field(
+          new CrudFieldText('name')
+            // Then we limit the visibility on the parent field "component" has one of the two possible values (one or two).
+            // It will take an array witht the list of possible values to compare
+            // NOTE: At the moment THIS ONLY WILL WORK WITH ARRAY OF PRIMITIVE DATA TYPES NOT WITH OBJECTS NOR ARRAY.
+          .visibleWhen('component', ['one', 'two'])
+        )
+    ]
+  }
+}
+```
+
 #### Field label translations
 
 Crud will try to find a translation label for a given field name located at `attributes.${fieldName}` or `custom.${module}.${fieldName}` or by default the name of the field itself.

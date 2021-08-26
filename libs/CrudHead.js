@@ -118,7 +118,7 @@ export default class CrudHead {
 
   /**
    * Hides the current head on index.
-   * @returns {CrudHead}
+   * @returns {CrudHead|CrudField}
    */
   hideOnIndex() {
     this.$options.settings.visibility.index = false
@@ -127,7 +127,7 @@ export default class CrudHead {
 
   /**
    * Hides a given field when creating.
-   * @returns {CrudHead}
+   * @returns {CrudHead|CrudField}
    */
   hideWhenCreating() {
     this.$options.settings.visibility.creating = false
@@ -136,7 +136,7 @@ export default class CrudHead {
 
   /**
    * Hides a given head when updating.
-   * @returns {CrudHead}
+   * @returns {CrudHead|CrudField}
    */
   hideWhenUpdating() {
     this.$options.settings.visibility.updating = false
@@ -145,7 +145,7 @@ export default class CrudHead {
 
   /**
    * Hides a given head when updating.
-   * @returns {CrudHead}
+   * @returns {CrudHead|CrudField}
    */
   hideOnDetail() {
     this.$options.settings.visibility.detail = false
@@ -154,7 +154,7 @@ export default class CrudHead {
 
   /**
    * Hide this field when presenting forms.
-   * @returns {CrudHead}
+   * @returns {CrudHead|CrudField}
    */
   hideOnForms() {
     this.hideWhenCreating().hideWhenUpdating()
@@ -163,7 +163,7 @@ export default class CrudHead {
 
   /**
    * Show a given field only on form page.
-   * @returns {CrudHead}
+   * @returns {CrudHead|CrudField}
    */
   onlyOnForms() {
     this.hideOnIndex().hideOnDetail()
@@ -174,7 +174,7 @@ export default class CrudHead {
 
   /**
    * Show only when creating.
-   * @returns {CrudHead}
+   * @returns {CrudHead|CrudField}
    */
   onlyWhenCreating() {
     this.hideOnIndex().hideOnDetail().hideWhenUpdating()
@@ -184,7 +184,7 @@ export default class CrudHead {
 
   /**
    * Show only when creating.
-   * @returns {CrudHead}
+   * @returns {CrudHead|CrudField}
    */
   onlyWhenUpdating() {
     this.hideOnIndex().hideOnDetail().hideWhenCreating()
@@ -194,7 +194,7 @@ export default class CrudHead {
 
   /**
    * Show a given field only on detail pay.
-   * @returns {CrudHead}
+   * @returns {CrudHead|CrudField}
    */
   onlyOnDetail() {
     this.hideOnIndex().hideWhenCreating().hideWhenUpdating()
@@ -203,9 +203,25 @@ export default class CrudHead {
   }
 
   /**
+   * Display the current field based on value(s) from other field name in the same module.
+   *
+   * @param {String} name
+   * @param {String|Array<String>} value
+   * @returns {CrudField}
+   */
+  visibleWhen(name, value) {
+    if (!name) {
+      return this
+    }
+    this.$options.settings.visibility.when_field_name = name
+    this.$options.settings.visibility.when_field_value = value
+    return this
+  }
+
+  /**
    * Set the field
    * @param {Boolean} enabled
-   * @returns {CrudHead}
+   * @returns {CrudHead|CrudField}
    */
   dense(enabled = true) {
     this.$options.settings.dense = enabled
@@ -215,7 +231,7 @@ export default class CrudHead {
   /**
    * Set the field
    * @param {Boolean} enabled
-   * @returns {CrudHead}
+   * @returns {CrudHead|CrudField}
    */
   clearable(enabled = true) {
     this.$options.settings.clearable = enabled
@@ -226,7 +242,7 @@ export default class CrudHead {
    * Set the label visible for the field.
    *
    * @param {String} text
-   * @returns {CrudHead}
+   * @returns {CrudHead|CrudField}
    */
   label(text) {
     this.$options.label = text
@@ -236,7 +252,7 @@ export default class CrudHead {
   /**
    * Indicate the object path to get the data for this crud.
    * @param {String} name
-   * @returns {CrudHead}
+   * @returns {CrudHead|CrudField}
    */
   name(name) {
     this.$options.name = name
@@ -247,7 +263,7 @@ export default class CrudHead {
    * Set the component name to be used.
    *
    * @param {String} name
-   * @returns {CrudHead}
+   * @returns {CrudHead|CrudField}
    */
   component(name) {
     this.$options.component = name
@@ -256,7 +272,7 @@ export default class CrudHead {
 
   /**
    * Make this field sortable on index.
-   * @returns {CrudHead}
+   * @returns {CrudHead|CrudField}
    */
   sortable() {
     this.$options.settings.sortable = true
@@ -265,7 +281,7 @@ export default class CrudHead {
 
   /**
    * Mark this field as READ only.
-   * @returns {CrudHead}
+   * @returns {CrudHead|CrudField}
    */
   readonly() {
     this.$options.readonly = true
@@ -275,7 +291,7 @@ export default class CrudHead {
   /**
    * Set the current value or default value.
    * @param {Array|Object|String|Number} value
-   * @returns {CrudHead}
+   * @returns {CrudHead|CrudField}
    */
   value(value) {
     this.$options.settings.value = value
@@ -286,7 +302,7 @@ export default class CrudHead {
    * Get the value from a given vuex state.
    *
    * @param {String} statePath
-   * @returns {CrudHead}
+   * @returns {CrudHead|CrudField}
    */
   valueFromVuexState(statePath) {
     this.$options.settings.valueState = statePath
@@ -297,7 +313,7 @@ export default class CrudHead {
    * Get the value from a given vuex state.
    *
    * @param {String} getterPath
-   * @returns {CrudHead}
+   * @returns {CrudHead|CrudField}
    */
   valueFromVuexGetter(getterPath) {
     this.$options.settings.valueGetter = getterPath

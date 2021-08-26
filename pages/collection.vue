@@ -1,8 +1,8 @@
 <template>
   <c-ui-collection
     :module="module"
-    :headers="headers"
-    :form-fullscreen="current.fullscreen"
+    :headers="getVisibleHeaders()"
+    :form-fullscreen="getCurrentModule().fullscreen"
   />
 </template>
 

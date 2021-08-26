@@ -25,7 +25,7 @@ export default {
   },
   methods: {
     /**
-     * @returns {String?}
+     * @returns {String}
      */
     getQuerySearch() {
       return this.$route.query.search || null

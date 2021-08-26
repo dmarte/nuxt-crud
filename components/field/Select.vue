@@ -27,9 +27,7 @@ export default {
     options() {
       return this.items.map(({ text, value }) => ({
         value,
-        text: this.$te(text)
-          ? this.$tc(text, 1)
-          : text,
+        text: this.$te(text) ? this.$tc(text, 1) : text,
       }))
     },
   },

@@ -5,26 +5,26 @@
         {{ title }}
       </v-card-title>
       <v-card-text>
-        <template v-for="(field, index) in fields">
+        <template v-for="(field, index) in getVisibleFields(model)">
           <c-ui-field-render
-            v-if="visible(field)"
+            v-if="isVisible(field, model)"
             :key="`field_${index}`"
-            :value="getValuePath(field.name, getFieldDefaultValue(field))"
-            :component='field.component'
-            :label='getTranslation(field.label)'
-            :placeholder='field.placeholder'
-            :type='field.type'
-            :hint='field.hint'
-            :min='field.settings.min_value'
-            :max='field.settings.max_value'
-            :settings='field.settings'
-            :params='field.settings.params'
-            :persistent-hint='field.settings.persistent_hint'
-            :persistent-placeholder='field.settings.persistent_placeholder'
-            :clearable='field.settings.clearable'
-            :dense='field.settings.dense'
-            :readonly='field.settings.readonly'
-            :items='field.settings.items'
+            :value="field.settings.value"
+            :component="field.component"
+            :label="field.label"
+            :placeholder="field.placeholder"
+            :type="field.type"
+            :hint="field.hint"
+            :min="field.settings.min_value"
+            :max="field.settings.max_value"
+            :settings="field.settings"
+            :params="field.settings.params"
+            :persistent-hint="field.settings.persistent_hint"
+            :persistent-placeholder="field.settings.persistent_placeholder"
+            :clearable="field.settings.clearable"
+            :dense="field.settings.dense"
+            :readonly="field.settings.readonly"
+            :items="field.settings.items"
             :module="module"
             :response="response"
             :disabled="!field.enabled || processing"
@@ -60,6 +60,7 @@
 import form from '../../mixins/forms'
 import crud from '../../mixins/crud'
 import CUiFieldRender from '../../components/ui/FieldRender'
+
 export default {
   name: 'CUiForm',
   components: { CUiFieldRender },
@@ -67,8 +68,20 @@ export default {
   methods: {
     getDisplayMode() {
       return this.DISPLAY_MODE_FORM
-    }
-  }
+    },
+    /**
+     * @param {CrudHead.$options} field
+     * @param {Object} schema
+     */
+    mapHeadToField(field, schema = {}) {
+      field.settings.value = this.getValuePath(
+        field.name,
+        this.getFieldDefaultValue(field)
+      )
+      field.label = this.getTranslation(field.label)
+      return field
+    },
+  },
 }
 </script>
 

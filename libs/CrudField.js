@@ -8,18 +8,4 @@ export default class CrudField extends CrudHead {
     this.component(type)
     this.value(null)
   }
-
-  /**
-   * Create a dependency based on a given field name.
-   *
-   * @param {String} name
-   * @returns {CrudField}
-   */
-  dependsOnFieldName(name) {
-    if (!name) {
-      return this
-    }
-    this.$options.dependency = field.$options.name
-    return this
-  }
 }
