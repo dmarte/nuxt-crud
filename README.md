@@ -131,6 +131,9 @@ import CrudModule from '@dmarte/nuxt-crud/libs/CrudModule'
     modules: [
       // Register the module "fields"
       new CrudModule('fields')
+        // Use this method to change the
+        // field name used as primary key.
+        .primaryKey('id')
         // Add a new field type ID
         .field(
           // The class that define the field type
@@ -291,6 +294,18 @@ You can control the field visibility in different scenarios.
             // NOTE: At the moment THIS ONLY WILL WORK WITH ARRAY OF PRIMITIVE DATA TYPES NOT WITH OBJECTS NOR ARRAY.
           .visibleWhen('component', ['one', 'two'])
         )
+        .field(
+          new CrudFieldText('id')
+            .hideOnIndex()
+            .hideWhenCreating()
+            .hideWhenUpdating()
+            .hideOnDetail()
+            .hideOnForms()
+            .onlyOnForms()
+            .onlyWhenCreating()
+            .onlyWhenUpdating()
+            .onlyOnDetail()
+        )
     ]
   }
 }
@@ -298,38 +313,33 @@ You can control the field visibility in different scenarios.
 
 #### Field label translations
 
-Crud will try to find a translation label for a given field name located at `attributes.${fieldName}` or `custom.${module}.${fieldName}` or by default the name of the field itself.
+CRUD module will try to find a translation label for a given field name in the following order: 
+1. `${fieldName}`
+1. `attribute.${fieldName}`
+1. `crud.module.${moduleName}.field.${fieldName}`
 
-That's why you can choose to only set the name of your field, then add the corresponding translation using `vue-i18n` plugin.
+If no exists any translation it will return the field label as it is.
 
 #### Module translations
 
-You can translate the title used for module if you create the key in your translation file using the following convention:
-`module.title.${module}`. 
+You can translate the title used for the module if you create the key in your translation file using the following convention:
+`crud.module.${moduleName}.title`. 
 
-Also, you can set the `singular` and `plural` form of the module using pipe `|` divisor.
+Also, you can set the `singular` and `plural` version of the module using pipe `|` divisor.
 
 ```json
 {
-  "module": {
-    "title": {
-      "fields" : "Campos adicionales|Campo adicional"
-    }
-  }
+  "module.fields.title": "Campos adicionales|Campo adicional"
 }
 ```
 #### Form translations
 To translate the title of the form you must have the keys in your translation files as following:
 ```json
 {
-  "module": {
-    "actions": {
-      "edit": "Edit {resource}",
-      "create": "Create {resource}"
-    }
-  }
+  "crud.actions.update": "Edit {resource}",
+  "crud.actions.create": "Create {resource}"
 }
 ```
 > Please note that `{resource}` is a placeholder that hold the `singular` form of the module name.
 > 
-> Eg. "`Edit {resource}`" will be "`Edit field`" when updating and "`Create resource`" when creating.
+> Eg. "`Edit {resource}`" will be "`Edit field`" when updating, when creating will be "`Create field`".

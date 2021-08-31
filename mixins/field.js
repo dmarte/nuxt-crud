@@ -4,40 +4,40 @@ export default {
   props: {
     value: {
       type: [String, Number, Boolean, Array, Object, Boolean],
-      default: null
+      default: null,
+    },
+    module: {
+      type: String,
+      default: 'general',
     },
     id: {
       type: String,
       default() {
         return `text_field_id_${this._uid}`
-      }
+      },
     },
     name: {
       type: String,
       default() {
         return `text_field_${this._uid}`
-      }
+      },
     },
     label: {
       type: String,
-      default() {
-        return this.$te(`attributes.${this.name}`) ? this.$t(`attributes.${this.name}`) : this.name
-      }
+      default: null,
     },
     placeholder: {
       type: String,
-      default() {
-        return this.label
-      }
+      default: null,
     },
     disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     response: {
       type: CrudResponse,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     head() {
@@ -45,12 +45,12 @@ export default {
     },
     model() {
       return this.$attrs.params.model
-    }
+    },
   },
   methods: {
     whenChange(value) {
       this.response.forget(this.name)
       this.$emit('input', value)
-    }
-  }
+    },
+  },
 }

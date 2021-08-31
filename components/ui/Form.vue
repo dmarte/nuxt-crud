@@ -11,6 +11,7 @@
             :key="`field_${index}`"
             :value="field.settings.value"
             :component="field.component"
+            :name='field.name'
             :label="field.label"
             :placeholder="field.placeholder"
             :type="field.type"

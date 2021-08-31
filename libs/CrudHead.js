@@ -1,3 +1,4 @@
+import _ from 'lodash'
 export default class CrudHead {
   /**
    * @param {{
@@ -245,7 +246,7 @@ export default class CrudHead {
    * @returns {CrudHead|CrudField}
    */
   label(text) {
-    this.$options.label = text
+    this.$options.label = _.snakeCase(text)
     return this
   }
 

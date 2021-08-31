@@ -10,7 +10,7 @@
     <template #activator='{ on, attrs }'>
       <v-text-field
         :value='$moment(value).short()'
-        :label="$t('Birthday')"
+        :label="label"
         :error-messages='response.feedback(name)'
         :disabled='disabled'
         :readonly='!disabled'
@@ -31,9 +31,10 @@
 
 <script>
 import OgResponse from '../../libs/CrudResponse'
-
+import field from '../../mixins/field'
 export default {
   name: 'CFieldBirthday',
+  mixins:[field],
   props: {
     value: {
       type: String,

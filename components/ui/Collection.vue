@@ -142,8 +142,8 @@ export default {
     title: {
       type: String,
       default() {
-        return this.$te(`module.title.${this.module}`)
-          ? this.$tc(`module.title.${this.module}`, 2)
+        return this.$te(`crud.module.${this.module}.title`)
+          ? this.$tc(`crud.module.${this.module}.title`, 2)
           : this.module
       }
     },

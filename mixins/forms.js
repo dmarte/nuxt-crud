@@ -8,9 +8,9 @@ export default {
     title: {
       type: String,
       default() {
-        const key = this.isUpdating ? 'module.actions.edit' : 'module.actions.create'
-        const resource = this.$te(`module.title.${this.module}`)
-          ? this.$tc(`module.title.${this.module}`, 1)
+        const key = this.isUpdating ? 'crud.actions.update' : 'crud.actions.create'
+        const resource = this.$te(`crud.module.${this.module}.title`)
+          ? this.$tc(`crud.module.${this.module}.title`, 1)
           : this.module
 
         return this.$te(key) ? this.$t(key, {resource}) : this.module
@@ -54,16 +54,16 @@ export default {
      * @returns {String}
      */
     getTranslation(label) {
-      if (this.$te(`attributes.${label}`)) {
-        return this.$tc(`attributes.${label}`, 1).toString()
-      }
-
-      if (this.$te(`custom.${this.module}.${label}`)) {
-        return this.$tc(`custom.${this.module}.${label}`, 1).toString()
-      }
-
       if (this.$te(label)) {
         return this.$t(label).toString()
+      }
+
+      if (this.$te(`attribute.${label}`)) {
+        return this.$tc(`attribute.${label}`, 1).toString()
+      }
+
+      if (this.$te(`crud.module.${this.module}.attribute.${label}`)) {
+        return this.$tc(`crud.module.${this.module}.attribute.${label}`, 1).toString()
       }
 
       return label

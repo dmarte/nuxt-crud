@@ -1,5 +1,5 @@
 <template>
-  <c-field-generic-read :response='response' :label='label'>
+  <c-field-generic-read :response='response' :label="label">
     <v-card v-if='value.length > 0' outlined>
       <v-data-table
         :headers="headers"
