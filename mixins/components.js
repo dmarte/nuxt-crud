@@ -14,12 +14,7 @@ export default {
     breadcrumbs() {
       return []
     },
-    error(message) {
-      this.$store.commit('messenger/error', message)
-    },
-    success(message) {
-      this.$store.commit('messenger/success', message)
-    },
+
     camel(name) {
       if (!name) {
         return ''

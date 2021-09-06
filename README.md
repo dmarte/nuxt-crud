@@ -316,7 +316,7 @@ You can control the field visibility in different scenarios.
 CRUD module will try to find a translation label for a given field name in the following order: 
 1. `${fieldName}`
 1. `attribute.${fieldName}`
-1. `crud.module.${moduleName}.field.${fieldName}`
+1. `crud.module.${moduleName}.attribute.${fieldName}`
 
 If no exists any translation it will return the field label as it is.
 
@@ -329,7 +329,7 @@ Also, you can set the `singular` and `plural` version of the module using pipe `
 
 ```json
 {
-  "module.fields.title": "Campos adicionales|Campo adicional"
+  "crud.module.fields.title": "Campos adicionales|Campo adicional"
 }
 ```
 #### Form translations

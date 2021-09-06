@@ -6,9 +6,13 @@
     :id="id"
     :placeholder="placeholder"
     :disabled="disabled"
+    :items='items'
+    :search-input.sync="search"
+    item-value='value'
+    item-text='text'
     v-bind="$attrs"
     v-on="$listeners"
-    :search-input.sync="search"
+    hide-selected
     hide-no-data
     chips
     multiple
@@ -43,6 +47,12 @@ import field from '../../mixins/field'
 export default {
   name: 'CFieldTags',
   mixins: [field],
+  props: {
+    items: {
+      type: Array,
+      required: true
+    }
+  },
   data() {
     return {
       search: null
@@ -50,7 +60,13 @@ export default {
   },
   methods: {
     remove (item) {
-      this.whenChange(this.value.filter(v => !v.toLowerCase().includes(item)))
+      this.whenChange(this.value.filter(v => {
+        if (typeof v === 'string') {
+          return !v.toLowerCase().includes(item)
+        }
+
+        return v.text.toLowerCase().includes(item.text)
+      }))
     },
   },
   i18n: {

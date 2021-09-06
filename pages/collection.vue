@@ -1,24 +1,37 @@
 <template>
   <c-ui-collection
     :module="module"
-    :headers="getVisibleHeaders()"
-    :form-fullscreen="getCurrentModule().fullscreen"
+    :form-fullscreen="settings.fullscreen"
+    :headers='columns()'
+    :actions='getModuleActions(module)'
+    :title='getModulePageTitle(module)'
+    :dense='settings.dense'
+    :display-mode='DISPLAY_MODE_INDEX'
+    :value='collection'
+    :busy='$fetchState.pending'
+    @refresh='$fetch'
+    @search='whenSearching'
+    @sort:desc='sortDesc'
+    @sort:by='sortBy'
   />
 </template>
 
 <script>
 import CUiCollection from '../components/ui/Collection'
-import crud from '../mixins/crud'
+import collection from '../mixins/pageCollection'
 export default {
-  name: 'collection',
-  mixins: [crud],
-  props: {
-    module: { type: String },
-  },
+  name: 'PageCrudCollection',
   components: { CUiCollection },
-  methods: {
-    getDisplayMode() {
-      return this.DISPLAY_MODE_INDEX
+  mixins: [collection],
+  props: {
+    module: { type: String, required: true },
+  },
+  async fetch() {
+    await this.collect()
+  },
+  computed: {
+    settings() {
+      return this.getModuleSettings(this.module)
     }
   }
 }

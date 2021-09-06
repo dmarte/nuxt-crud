@@ -2,7 +2,7 @@
   <div v-if="valid">
     <c-ui-messenger />
     <c-ui-breadcrumbs />
-    <nuxt-child :title="title" :module="module" keep-alive />
+    <nuxt-child :module="module" />
   </div>
   <v-container v-else>
     <v-row>
@@ -43,14 +43,6 @@ export default {
     modules() {
       return this.$crud.modules.map(({ name }) => name)
     },
-    title() {
-      return this.$tc(`module.title.${this.module}`, 2)
-    },
-  },
-  head() {
-    return {
-      title: this.title,
-    }
-  },
+  }
 }
 </script>

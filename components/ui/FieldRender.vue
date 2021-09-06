@@ -1,23 +1,32 @@
 <template>
-  <component v-bind="$attrs" :is="block" :module="module" :value='value' v-on="$listeners" />
+  <component
+    v-bind="$attrs"
+    :is="block"
+    :module="module"
+    :value="value"
+    v-on="$listeners"
+  />
 </template>
 
 <script>
-import components from '../../mixins/components'
-import crud from '../../mixins/crud'
+import Vue from 'vue'
+import module from '../../mixins/module'
+
 export default {
   name: 'CUiFieldRender',
-  mixins: [components, crud],
+  mixins: [module],
   props: {
     displayMode: {
       type: String,
-      default() {
-        return this.DISPLAY_MODE_FORM
-      },
+      required: true,
+    },
+    module: {
+      type: String,
+      required: true,
     },
     value: {
       type: [Array, Object, String, Number, Boolean],
-      default: null
+      default: null,
     },
     component: {
       type: String,
@@ -26,16 +35,23 @@ export default {
   },
   computed: {
     block() {
-      const suffix =
-        this.displayMode === this.DISPLAY_MODE_FORM ? '' : this.displayMode
-      let component = this.form(this.component, '', suffix)
-      // If no component registered
-      // then render the generic
-      if (!this.exists(component)) {
-        component = this.form('Text', 'CField', this.DISPLAY_MODE_DETAIL)
+      const allowed = ['CFieldHeading']
+      if (allowed.includes(this.component)) {
+        return this.component
       }
 
-      return component
+      let suffix = this.getModuleDisplayMode()
+      if (this.isModuleInFormMode(this.module)) {
+        suffix = ''
+      }
+      let component = `${this.component}${suffix}`
+      // If no component registered
+      // then render the generic
+      if (component in Vue.options.components) {
+        return component
+      }
+
+      return `CFieldText${this.DISPLAY_MODE_DETAIL}`
     },
   },
 }

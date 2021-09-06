@@ -1,14 +1,15 @@
 <template>
   <v-checkbox
-    :input-value='value'
-    :error-messages='response.feedback(name)'
-    :label='label'
-    :disabled='disabled'
-    :id='id'
-    :true-value='trueValue'
-    :false-value='falseValue'
-    v-bind='$attrs'
-    v-on='$listeners'
+    :input-value="value"
+    :error-messages="response.feedback(name)"
+    :label="label"
+    :disabled="disabled"
+    :id="id"
+    :true-value="trueValue"
+    :false-value="falseValue"
+    v-bind="$attrs"
+    v-on="$listeners"
+    @change="whenChange"
   />
 </template>
 
@@ -21,16 +22,14 @@ export default {
   props: {
     trueValue: {
       type: [Boolean, String],
-      default: true
+      default: true,
     },
     falseValue: {
       type: [Boolean, String],
-      default: false
-    }
-  }
+      default: false,
+    },
+  },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

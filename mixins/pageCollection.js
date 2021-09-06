@@ -1,20 +1,29 @@
-import components from './components'
-import OgResponse from '../libs/CrudResponse'
-
+import module from './module'
+import translator from './translator'
+import CrudResponse from '../libs/CrudResponse'
+import _ from 'lodash'
 export default {
-  mixins: [components],
+  mixins: [module, translator],
+  props: {
+    module: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       collection: [],
+      formOpened: false,
+      model: {},
       cancelToken: this.$axios.CancelToken.source(),
-      response: new OgResponse(),
+      response: new CrudResponse(),
       fetching: false,
       searching: undefined,
-      meta: { total: 0, lastPage: 0 }
+      meta: { total: 0, lastPage: 0 },
     }
   },
   watch: {
-    '$route.query': '$fetch'
+    '$route.query': '$fetch',
   },
   beforeRouteEnter(__, _, next) {
     next((vm) => vm.initialize())
@@ -30,6 +39,9 @@ export default {
     getQuerySearch() {
       return this.$route.query.search || null
     },
+    /**
+     * @returns {string}
+     */
     getQuerySortBy() {
       if (this.$route.query.sort_by) {
         return this.$route.query.sort_by
@@ -37,8 +49,11 @@ export default {
       if (this.defaultSortBy) {
         return this.defaultSortBy
       }
-      return 'id'
+      return this.getModulePrimaryKeyName(this.module)
     },
+    /**
+     * @returns {boolean}
+     */
     getQuerySortDesc() {
       if (this.$route.query.sort_desc) {
         return String(this.$route.query.sort_desc) === 'true'
@@ -46,27 +61,59 @@ export default {
 
       return this.defaultSortDesc || true
     },
+    /**
+     * @returns {number}
+     */
     getQueryPerPage() {
-      return parseInt(this.$route.query.per_page || 15)
+      return parseInt(
+        this.$route.query.per_page ||
+          this.getModuleSettings(this.module).perPage ||
+          15
+      )
     },
+    /**
+     * @returns {number}
+     */
     getQueryCurrentPage() {
       return parseInt(this.$route.query.current_page || 1)
     },
+    /**
+     * Get the current query string in the route.
+     * @returns {Object}
+     */
     getQueryString() {
       return {
-        ...this.queryModel(),
+        ...this.getQueryModel(),
         search: this.getQuerySearch(),
         sort_by: this.getQuerySortBy(),
-        sort_desc: this.getQuerySortDesc()
+        sort_desc: this.getQuerySortDesc(),
       }
     },
+    /**
+     * Get the keys-value for pagination state.
+     *
+     * @returns {{per_page: number, page: number}}
+     */
     getQueryPagination() {
       return {
         per_page: this.getQueryPerPage(),
-        page: this.getQueryCurrentPage()
+        page: this.getQueryCurrentPage(),
       }
     },
+    /**
+     * A method that should be used to initialize the page.
+     *
+     * @returns {void}
+     */
     initialize() {},
+    /**
+     * The base model for the query string filters.
+     * NOTE: This is to prevent override the required ones.
+     * @returns {Object}
+     */
+    getQueryModel() {
+      return {}
+    },
     /**
      * Trigger when any of the filter changes.
      *
@@ -79,13 +126,14 @@ export default {
         params: this.$route.params,
         query: {
           ...this.getQueryString(),
-          ...filters
-        }
+          ...filters,
+        },
       })
     },
     /**
      * Trigger used to configure the search.
      * @param {String} text
+     * @returns {void}
      */
     whenSearching(text = '') {
       if (this.searching) {
@@ -99,7 +147,7 @@ export default {
     /**
      * When an action (any) is cancelled.
      * USEFUL TO BYPASS THE ACTION.
-     * @param {OgResponse?} response
+     * @param {CrudResponse?} response
      * @returns {void}
      */
     whenCancelled(response) {
@@ -112,11 +160,15 @@ export default {
      * @returns {void}
      */
     whenDestroyed(item) {
+      this.collection = this.collection.filter(
+        (element) => element.id !== item.id
+      )
       this.destroyed(item)
     },
     /**
      * When a given element was updated.
      * USEFUL TO BYPASS THE ACTION.
+     *
      * @param {Object} item
      * @returns {void}
      */
@@ -124,6 +176,13 @@ export default {
       if (item.data) {
         item = item.data
       }
+      const index = this.collection.findIndex(
+        (element) => element.id === item.id
+      )
+      if (index < 0) {
+        return
+      }
+      this.collection.splice(index, 1, this.merge(item))
       this.updated(item)
     },
     /**
@@ -136,75 +195,44 @@ export default {
       if (item.data) {
         item = item.data
       }
+      this.collection = [this.merge(item)].concat(...this.collection)
       this.created(item)
     },
     /**
      * When something wrong within the module.
-     * @param {OgResponse} response
+     * @param {CrudResponse} response
      * @returns {void}
      */
     whenFailed(response) {
-      this.error(
-        this.$te(response.message)
-          ? this.$t(response.message)
-          : response.message
-      )
+      this.failed(response)
     },
     /**
-     * The base model for the query string filters.
-     * NOTE: This is to prevent override the required ones.
-     * @returns {Object}
-     */
-    queryModel() {
-      return {}
-    },
-    /**
-     * Action to add an item when created.
-     * @param {Object} item
+     * Set a given item in the "model" base property.
+     * @param {object} item
      * @returns {void}
      */
-    created(item) {
-      this.collection = [this.merge(item)].concat(...this.collection)
-      this.$emit('create:success', item)
-      this.success(this.$t('Resource created'))
+    select(item) {
+      this.model = _.cloneDeep(item)
     },
     /**
-     * Action to update the list when item updated.
-     * @param {Object} item
+     * Trigger the form in update mode.
+     *
+     * @param {any} item
      * @returns {void}
      */
-    updated(item) {
-      const index = this.collection.findIndex(
-        (element) => element.id === item.id
-      )
-      if (index < 0) {
-        return
-      }
-      this.collection.splice(index, 1, this.merge(item))
-      this.$emit('update:success', item)
-      this.success(this.$t('Resource updated'))
+    wantsUpdate(item) {
+      this.select(item)
+      this.formOpened = true
     },
     /**
-     * Action to remove the item when deleted.
-     * @param {Object} item
+     * Push to detail page.
+     *
+     * @param {Object}item
      * @returns {void}
      */
-    destroyed(item) {
-      this.collection = this.collection.filter(
-        (element) => element.id !== item.id
-      )
-      this.$emit('destroy:success', item)
-      this.success(this.$t('Resource deleted'))
-    },
-    /**
-     * Action to take when a modal is cancelled.
-     * @param {OgResponse} response
-     */
-    cancelled(response) {
-      if (response) {
-        response.reset()
-      }
-      this.$emit('cancel')
+    wantsDetail(item) {
+      this.select(item)
+      this.$router.push(this.getModuleRouteDetail(this.module))
     },
     /**
      * Regenerate the request cancellation token.
@@ -216,55 +244,92 @@ export default {
     },
     /**
      * Used to map every single item in a collection.
+     * IMPORTANT:
+     * If you override this method make sure to return the item modified.
+     *
      * @param {Object} item
      * @returns {Object}
      */
     merge(item) {
       item.flags = {
         deleting: false,
-        editing: false
+        editing: false,
       }
       return item
     },
+    /**
+     * Generate all the columns that should be used in the collection.
+     * @returns {Array}
+     */
     columns() {
-      return []
+      return [
+        ...this.getModuleFieldsUsedInIndex(this.module).map((item) => {
+          item.divider = !!this.stripped
+          return item
+        }),
+        {
+          text: '',
+          value: '_',
+          sortable: false,
+          filterable: false,
+          groupable: false,
+          divider: false,
+          align: 'end',
+          cellClass: 'text-right',
+        },
+      ]
     },
     /**
-     * Indicate the relationships that should be
-     * loaded.
-     * @returns {*[]}
+     * Indicate the relationships that should be loaded.
+     * @returns {Array}
      */
     relations() {
       return []
     },
     /**
-     * Additional object or params that should
-     * be shared with the module store.
-     * @returns {{}}
+     * Additional params that should be shared with the module store.
+     * @returns {Object}
      */
     params() {
       return {}
     },
+    /**
+     * Sort the results by a given column.
+     *
+     * @param {String} column
+     * @returns {Promise<void>}
+     */
     async sortBy(column) {
-      await this.whenFilter({ sort_by: column })
+      return await this.whenFilter({ sort_by: column })
     },
+    /**
+     * Sort the collection in descending order.
+     *
+     * @param {boolean} enabled
+     * @returns {Promise<void>}
+     */
     async sortDesc(enabled) {
-      await this.whenFilter({ sort_desc: !!enabled })
+      return await this.whenFilter({ sort_desc: !!enabled })
     },
+    /**
+     * Responsible to collect the information related to the given module.
+     *
+     * @returns {Promise<void>}
+     */
     async collect() {
       this.resetCancelToken()
       this.fetching = true
       try {
         const response = await this.$axios.$get(
-          `${this.$crud.api.prefix}${this.plural(this.module)}`,
+          this.getModuleApiUrl(this.module),
           {
             params: {
               ...this.getQueryString(),
               ...this.getQueryPagination(),
               with: this.relations(),
-              paginator: true
+              paginator: true,
             },
-            cancelToken: this.cancelToken.token
+            cancelToken: this.cancelToken.token,
           }
         )
         this.meta.total = response.meta.total || 0
@@ -275,11 +340,7 @@ export default {
           return
         }
         this.response.parse(exception)
-        this.error(this.$te(this.response.message) ? this.$t(this.response.message) : this.response.message)
-        if (this.response.isSessionExpired) {
-          this.$auth.logout()
-          await this.$router.push({ name: 'auth-login', query: { redirect: this.$route.fullPath } })
-        }
+        this.whenFailed(this.response)
       } finally {
         this.fetching = false
       }

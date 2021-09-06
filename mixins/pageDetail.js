@@ -1,7 +1,7 @@
 import { get, isString } from 'lodash'
-import forms from './forms'
+import resource from './pageResource'
 export default {
-  mixins: [forms],
+  mixins: [resource],
   props: {
     headers: {
       type: Array,

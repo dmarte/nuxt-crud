@@ -1,4 +1,3 @@
-import _ from 'lodash'
 export default class CrudHead {
   /**
    * @param {{
@@ -43,7 +42,7 @@ export default class CrudHead {
             creating: true,
             updating: true,
             index: true,
-            detail: false,
+            detail: true,
             when_field_name: null,
             when_field_value: null,
           },
@@ -61,7 +60,7 @@ export default class CrudHead {
           hooks: [],
           params: {},
           min_value: null,
-          max_value: null,
+          max_value: null
         },
         label: null,
         component: CrudHead.FIELD_TYPE_TEXT,
@@ -246,7 +245,7 @@ export default class CrudHead {
    * @returns {CrudHead|CrudField}
    */
   label(text) {
-    this.$options.label = _.snakeCase(text)
+    this.$options.label = text
     return this
   }
 
@@ -291,7 +290,7 @@ export default class CrudHead {
 
   /**
    * Set the current value or default value.
-   * @param {Array|Object|String|Number} value
+   * @param {Array|Object|String|Number|Boolean} value
    * @returns {CrudHead|CrudField}
    */
   value(value) {

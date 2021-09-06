@@ -14,17 +14,42 @@ export default class CrudModule {
    */
   constructor(name, options = {}) {
     options.name = pluralize.plural(name.toLowerCase())
+
     this.$options = Object.assign(
       {
         name: null,
         dense: false,
         fullscreen: false,
+        width: 250, // Size of the form in modal
         form: undefined,
         primaryKey: 'id',
+        perPage: 30,
+        routes: {
+          login: 'login',
+        },
+        /**
+         * @type {Array<CrudField>}
+         */
         head: [],
+        /**
+         * @type {Array<CrudAction>}
+         */
+        actions: [],
       },
       options
     )
+  }
+
+  /**
+   * Add an action to a given module.
+   *
+   * @param {CrudAction} action
+   * @returns {CrudModule}
+   */
+  action(action) {
+    action.module(this.$options.name)
+    this.$options.actions.push(action)
+    return this
   }
 
   /**
@@ -93,6 +118,7 @@ export default class CrudModule {
   toObject() {
     const out = { ...this.$options }
     out.head = out.head.map((v) => v.toObject())
+    out.actions = out.actions.map(v => v.toObject())
     return out
   }
 }

@@ -1,17 +1,18 @@
 <template>
-  <v-form @submit.prevent="whenSave">
+  <v-form @submit.prevent="$emit('save')">
     <v-card>
       <v-card-title>
         {{ title }}
       </v-card-title>
       <v-card-text>
-        <template v-for="(field, index) in getVisibleFields(model)">
+        <template v-for="(field, index) in fields">
           <c-ui-field-render
-            v-if="isVisible(field, model)"
-            :key="`field_${index}`"
+            :module="module"
+            :display-mode="displayMode"
             :value="field.settings.value"
             :component="field.component"
-            :name='field.name'
+            :key="`field_${index}`"
+            :name="field.name"
             :label="field.label"
             :placeholder="field.placeholder"
             :type="field.type"
@@ -25,15 +26,11 @@
             :clearable="field.settings.clearable"
             :dense="field.settings.dense"
             :readonly="field.settings.readonly"
-            :items="field.settings.items"
-            :module="module"
+            :items="field.settings.items.map(mapItems)"
             :response="response"
-            :disabled="!field.enabled || processing"
-            :display-mode="getDisplayMode()"
+            :disabled="!field.enabled || busy"
             @input="
-              (v) => {
-                setValuePath(field.name, v)
-              }
+              (v) => $emit('change', { fieldName: field.name, fieldValue: v })
             "
           />
         </template>
@@ -42,15 +39,15 @@
       <v-card-actions>
         <v-spacer />
         <v-btn
-          :disabled="processing"
+          :disabled="busy"
           type="button"
           text
-          @click.prevent="whenCancelled"
+          @click.prevent="$emit('cancel', response)"
         >
-          {{ $t('Cancel') }}
+          {{ $t('crud.actions.cancel') }}
         </v-btn>
-        <v-btn :disabled="processing" type="submit" color="primary" text>
-          {{ $t('Save') }}
+        <v-btn :disabled="busy" type="submit" color="primary" text>
+          {{ $t('crud.actions.save') }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -58,29 +55,45 @@
 </template>
 
 <script>
-import form from '../../mixins/forms'
-import crud from '../../mixins/crud'
 import CUiFieldRender from '../../components/ui/FieldRender'
+import CrudResponse from '../../libs/CrudResponse'
 
 export default {
   name: 'CUiForm',
   components: { CUiFieldRender },
-  mixins: [form, crud],
-  methods: {
-    getDisplayMode() {
-      return this.DISPLAY_MODE_FORM
+  props: {
+    title: {
+      type: String,
+      required: true,
     },
-    /**
-     * @param {CrudHead.$options} field
-     * @param {Object} schema
-     */
-    mapHeadToField(field, schema = {}) {
-      field.settings.value = this.getValuePath(
-        field.name,
-        this.getFieldDefaultValue(field)
-      )
-      field.label = this.getTranslation(field.label)
-      return field
+    response: {
+      type: CrudResponse,
+      required: true,
+    },
+    displayMode: {
+      type: String,
+      required: true
+    },
+    module: {
+      type: String,
+      required: true
+    },
+    fields: {
+      type: Array,
+      default: () => [],
+    },
+    busy: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  methods: {
+    mapItems(item) {
+      if (typeof item === 'string') {
+        return item
+      }
+      item.text = this.$te(item.text) ? this.$t(item.text) : item.text || null
+      return item
     },
   },
 }

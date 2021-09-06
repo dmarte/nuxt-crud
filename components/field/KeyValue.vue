@@ -76,16 +76,22 @@ export default {
       return [
         {
           value: 'value',
-          text: this.$tc('Value', 1),
+          text: this.getTypeTranslation('value'),
         },
         {
           value: 'text',
-          text: this.$t('attributes.label'),
+          text: this.getTypeTranslation('label'),
         },
       ]
     },
   },
   methods: {
+    getTypeTranslation(type) {
+      if (this.$te(`crud.attribute.${type}`)) {
+        return this.$tc(`crud.attribute.${type}`, 1)
+      }
+      return type
+    },
     whenItemChange(index, item) {
       const values = [...this.value]
       values.splice(index, 1, item)
@@ -98,8 +104,8 @@ export default {
       this.whenChange([
         ...this.value,
         {
-          value: `${this.$tc('Value', 1)} ${this.value.length}`,
-          text: `${this.$t('attributes.label')} ${this.value.length}`,
+          value: `${this.getTypeTranslation('value')} ${this.value.length+1}`,
+          text: `${this.getTypeTranslation('label')} ${this.value.length+1}`,
         },
       ])
     },

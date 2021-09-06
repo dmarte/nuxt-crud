@@ -3,113 +3,68 @@
     <v-card-title>
       {{ title }}
       <v-spacer />
-      <v-dialog
-        ref='create'
-        v-model='modalCreateOpened'
-        :fullscreen='formFullscreen'
-        :max-width='formWidth'
-        eager
-        no-click-animation
-        scrollable
-        persistent
-      >
-        <template #activator='{ on, attrs }'>
-          <v-btn
-            v-bind='attrs'
-            :disabled='$fetchState.pending'
-            color='primary'
-            elevation='0'
-            ripple
-            fab
-            v-on='on'
-          >
-            <v-icon> mdi-plus</v-icon>
-          </v-btn>
-        </template>
-        <component
-          v-if='modalCreateOpened'
-          :is='formName'
-          :formName='formName'
-          :value='schema'
-          :module='module'
-          @cancel='
-            () => {
-              $refs.create.save()
-              whenCancelled()
-            }
-          '
-          @save:success='
-            (item) => {
-              $refs.create.save()
-              whenCreated(item)
-            }
-          '
-        />
-      </v-dialog>
+      <c-ui-actions-render
+        :module="module"
+        :dense="dense"
+        :display-mode="displayMode"
+        :actions="actions"
+        standalone
+      />
     </v-card-title>
     <v-toolbar flat>
       <v-btn-toggle>
         <v-btn
-          :disabled='busy'
+          :disabled="busy"
           icon
-          @click.prevent='collect'
+          @click.prevent="() => $emit('refresh', true)"
         >
           <v-icon> mdi-refresh</v-icon>
         </v-btn>
-        <slot name='toolbar' />
+        <slot name="toolbar" />
       </v-btn-toggle>
       <v-spacer />
       <v-text-field
-        :placeholder="$t('Quick search')"
-        :value='getQuerySearch()'
-        class='pt-2'
-        prepend-inner-icon='mdi-file-find-outline'
+        :placeholder="$t('crud.message.quick_search')"
+        :value="search"
+        class="pt-2"
+        prepend-inner-icon="mdi-file-find-outline"
         single-line
         solo-inverted
         flat
         clearable
-        @input='whenSearching'
+        @input="(v) => $emit('search', v)"
       />
     </v-toolbar>
     <v-card-text>
-      <v-card :outlined='outlined'>
+      <v-card :outlined="outlined">
         <v-data-table
-          :headers='columns()'
-          :items='collection'
-          :dense='dense'
-          :loading='busy'
-          :disable-sort='disableSort'
-          :disable-filtering='disableFiltering'
-          :sort-desc='getQuerySortDesc()'
-          :sort-by='getQuerySortBy()'
+          :headers="headers"
+          :items="value"
+          :dense="dense"
+          :loading="busy"
+          :disable-sort="disableSort"
+          :disable-filtering="disableFiltering"
+          :sort-desc="querySortDesc"
+          :sort-by="querySortBy"
           hide-default-footer
           must-sort
-          @update:sort-desc='sortDesc'
-          @update:sort-by='sortBy'
+          @update:sort-desc="(v) => $emit('sort:desc', v)"
+          @update:sort-by="(v) => $emit('sort:by', v)"
         >
           <template
-            v-slot:[`item.${column.value}`]='{ item, value }'
-            v-for='column in editableColumns'
+            v-slot:[`item.${column.value}`]="{ item, value }"
+            v-for="column in editableColumns"
           >
-            <slot
-              :name='`item.${column.value}`'
-              :item='item'
-              :value='value'
-            >
+            <slot :name="`item.${column.value}`" :item="item" :value="value">
               {{ value }}
             </slot>
           </template>
-          <template #item._='{ item }'>
-            <c-ui-options-menu
-              v-model='item'
-              :module='module'
-              :params='params()'
-              :form-fullscreen='formFullscreen'
-              :form-name='formName'
-              :form-width='formWidth'
-              @update:success='whenUpdated'
-              @create:success='whenCreated'
-              @destroy:success='whenDestroyed'
+          <template #item._="{ item }">
+            <c-ui-actions-render
+              v-model="item"
+              :display-mode="displayMode"
+              :module="module"
+              :actions="actions"
             />
           </template>
         </v-data-table>
@@ -117,109 +72,50 @@
     </v-card-text>
   </v-card>
 </template>
-
 <script>
-import collection from '../../mixins/collection'
+import CUiOptionsMenu from './OptionsMenu'
+import CUiActionsRender from './ActionsRender'
 
 export default {
   name: 'CUiCollection',
-  mixins: [collection],
+  components: { CUiActionsRender, CUiOptionsMenu },
   props: {
-    formName: {
-      type: String,
-      default() {
-        return 'CUiForm'
-      }
-    },
-    formFullscreen: {
-      type: Boolean,
-      default: false
-    },
-    formWidth: {
-      type: Number,
-      default: 500
-    },
     title: {
       type: String,
-      default() {
-        return this.$te(`crud.module.${this.module}.title`)
-          ? this.$tc(`crud.module.${this.module}.title`, 2)
-          : this.module
-      }
+      required: true,
     },
-    headers: {
-      type: Array,
-      default: () => []
-    },
-    schema: {
-      type: Object,
-      default: () => ({})
-    },
-    defaultSortBy: {
+    displayMode: {
       type: String,
-      default: 'id'
+      required: true,
     },
-    defaultSortDesc: {
-      type: [Boolean, String],
-      default: true
+    module: {
+      type: String,
+      required: true,
     },
-    dense: {
-      type: Boolean,
-      default: false
+    value: {
+      type: Array,
+      default: () => [],
     },
-    outlined: {
-      type: Boolean,
-      default: false
+    actions: {
+      type: Array,
+      default: () => [],
     },
-    disableSort: {
-      type: Boolean,
-      default: false
-    },
-    disableFiltering: {
-      type: Boolean,
-      default: false
-    },
-    stripped: {
-      type: Boolean,
-      default: false
-    }
-  },
-  async fetch() {
-    await this.collect()
-  },
-  data() {
-    return {
-      modalCreateOpened: false
-    }
+    search: { type: String, default: '' },
+    headers: { type: Array, default: () => [] },
+    disableSort: { type: Boolean, default: false },
+    disableFiltering: { type: Boolean, default: false },
+    stripped: { type: Boolean, default: false },
+    outlined: { type: Boolean, default: false },
+    dense: { type: Boolean, default: false },
+    busy: { type: Boolean, default: false },
+    querySortDesc: { type: Boolean, default: false },
+    querySortBy: { type: String, default: 'id' },
   },
   computed: {
-    busy() {
-      return this.$fetchState.pending || this.fetching || this.processing
-    },
     editableColumns() {
-      return this.columns().filter((i) => i.value !== '_')
+      return this.headers.filter((i) => i.value !== '_')
     },
   },
-  methods: {
-    columns() {
-      return [
-        ...this.headers.map((item) => {
-          item.divider = this.stripped
-          return item
-        }),
-        {
-          text: '',
-          value: '_',
-          sortable: false,
-          filterable: false,
-          groupable: false,
-          divider: false,
-          align: 'end',
-          cellClass: 'text-right'
-        }
-      ]
-    }
-  }
 }
 </script>
 
