@@ -7,6 +7,7 @@ export default class CrudAction {
       route: undefined,
       inline: false,
       standalone: false,
+      emits: undefined,
       params: {},
       query: {},
       confirmation: {
@@ -26,6 +27,7 @@ export default class CrudAction {
         action: undefined,
       },
     }
+      this.setParamFromRoute('params.module', 'module')
   }
 
   dynamicParam(prefix, path, name) {
@@ -195,6 +197,17 @@ export default class CrudAction {
    */
   inline() {
     this.$options.inline = true
+    return this
+  }
+
+  /**
+   * Set the component to emit a given event.
+   *
+   * @param {String} eventName
+   * @returns {CrudAction}
+   */
+  emits(eventName) {
+    this.$options.emits = eventName
     return this
   }
 

@@ -25,7 +25,6 @@ export default function (options) {
       },
     },
   })
-
   this.extendRoutes((routes, resolve) => {
     routes.push({
       path: '/c/:module',

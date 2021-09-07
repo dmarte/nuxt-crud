@@ -93,8 +93,9 @@ export default {
         this.getTranslation(
           `crud.module.${module}.message.${type}`,
           1,
-          placeholders
-        ) || this.getTranslation(`crud.message.${type}`, 1, placeholders)
+          placeholders,
+          this.getTranslation(`crud.message.${type}`, 1, placeholders)
+        )
       )
     },
     getTranslationForSuccessUpdate(module) {

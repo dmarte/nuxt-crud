@@ -7,7 +7,7 @@ export default class CrudActionUpdate extends CrudAction {
       .icon('mdi-pencil')
       .label('crud.actions.update')
       .route({ name: 'crud-module-update' })
-      .setParamFromRoute('params.id', 'id')
+      .setParamFromPrimaryKey()
       .setQueryFromRoute('fullPath', 'redirect')
       .hideWhenUpdating()
       .hideWhenCreating()

@@ -20,6 +20,7 @@
         :dense='settings.dense'
         :value='model'
         standalone
+
       />
       <c-ui-actions-render
         :module="module"
@@ -27,6 +28,7 @@
         :actions="actions"
         :dense='settings.dense'
         :value='model'
+        @destroy='whenDestroy'
       />
     </template>
   </c-ui-detail>

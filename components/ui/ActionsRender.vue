@@ -110,13 +110,17 @@ export default {
       })
     },
     collectionStandalone() {
-      return this.collection.filter(({standalone}) => standalone)
+      return this.collection.filter(({ standalone }) => standalone)
     },
     collectionInline() {
-      return this.collection.filter(({ inline, standalone }) => inline && !standalone)
+      return this.collection.filter(
+        ({ inline, standalone }) => inline && !standalone
+      )
     },
     collectionNotInline() {
-      return this.collection.filter(({ inline, standalone }) => !inline && !standalone)
+      return this.collection.filter(
+        ({ inline, standalone }) => !inline && !standalone
+      )
     },
     primaryKey() {
       return this.getModulePrimaryKeyValue(this.module)
