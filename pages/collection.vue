@@ -9,6 +9,7 @@
     :display-mode='DISPLAY_MODE_INDEX'
     :value='collection'
     :busy='$fetchState.pending'
+    :response='response'
     @refresh='$fetch'
     @search='whenSearching'
     @sort:desc='sortDesc'

@@ -56,7 +56,14 @@
             v-for="column in editableColumns"
           >
             <slot :name="`item.${column.value}`" :item="item" :value="value">
-              {{ value }}
+              <c-ui-field-render
+                :component="column.field.component"
+                :items='column.field.settings.items'
+                :module="module"
+                :display-mode="displayMode"
+                :value="value"
+                :response='response'
+              />
             </slot>
           </template>
           <template #item._="{ item }">
@@ -75,14 +82,19 @@
 <script>
 import CUiOptionsMenu from './OptionsMenu'
 import CUiActionsRender from './ActionsRender'
+import CUiFieldRender from './FieldRender'
 
 export default {
   name: 'CUiCollection',
-  components: { CUiActionsRender, CUiOptionsMenu },
+  components: { CUiFieldRender, CUiActionsRender, CUiOptionsMenu },
   props: {
     title: {
       type: String,
       required: true,
+    },
+    response: {
+      type: Object,
+      required: true
     },
     displayMode: {
       type: String,

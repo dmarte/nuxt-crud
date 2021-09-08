@@ -83,6 +83,15 @@ export default class CrudHead {
   static get FIELD_TYPE_TEXT() {
     return 'CFieldText'
   }
+  /**
+   * Component name for field texts.
+   *
+   * @returns {string}
+   * @constructor
+   */
+  static get FIELD_TYPE_SELECT() {
+    return 'CFieldSelect'
+  }
 
   /**
    * Display mode used to represent the index state.

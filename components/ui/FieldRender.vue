@@ -2,6 +2,7 @@
   <component
     v-bind="$attrs"
     :is="block"
+    :response='response'
     :module="module"
     :value="value"
     v-on="$listeners"
@@ -11,11 +12,16 @@
 <script>
 import Vue from 'vue'
 import module from '../../mixins/module'
+import CrudResponse from '../../libs/CrudResponse'
 
 export default {
   name: 'CUiFieldRender',
   mixins: [module],
   props: {
+    response: {
+      type: CrudResponse,
+      required: true
+    },
     displayMode: {
       type: String,
       required: true,

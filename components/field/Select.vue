@@ -25,10 +25,16 @@ export default {
   },
   computed: {
     options() {
-      return this.items.map(({ text, value }) => ({
-        value,
-        text: this.$te(text) ? this.$tc(text, 1) : text,
-      }))
+      return this.items.map((option) => {
+        if (typeof option === 'string') {
+          return {
+            value: option,
+            text: this.$te(option) ? this.$tc(option, 1).toString() : option
+          }
+        }
+
+        return option
+      })
     },
   },
 }

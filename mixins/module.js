@@ -27,7 +27,7 @@ export default {
      */
     DISPLAY_MODE_DETAIL() {
       return CrudHead.DISPLAY_MODE_DETAIL
-    },
+    }
   },
   methods: {
     /**
@@ -109,6 +109,19 @@ export default {
       return field
     },
     /**
+     *
+     * @param {any} currentValue
+     * @param {any} defaultValue
+     * @returns {any}
+     */
+    resolveFieldValue(currentValue, defaultValue = undefined) {
+      if (field.component === CrudHead.FIELD_TYPE_SELECT && value) {
+        return this.getTranslation(value, 1, {}, currentValue || defaultValue)
+      }
+
+      return value || defaultValue
+    },
+    /**
      * Transform the current field head to to Vuetify table head.
      * YOU CAN REWRITE THIS METHOD.
      *
@@ -120,6 +133,7 @@ export default {
         text: head.label,
         value: head.name,
         sortable: head.settings.sortable,
+        field: head
       }
     },
     /**
@@ -159,6 +173,15 @@ export default {
       return out
     },
     /**
+     *
+     * @param module
+     * @param {String} fieldName
+     * @returns {CrudHead.$options}
+     */
+    getModuleFieldByName(module, fieldName) {
+      return this.getModuleFields(module).find(field => field.name === fieldName)
+    },
+    /**
      * Get the default value assigned to a given field.
      *
      * @param {Object} field
@@ -194,14 +217,14 @@ export default {
       return (
         this.$crud.modules.find(({ name }) => name === module) || {
           head: [],
-          actions: [],
+          actions: []
         }
       )
     },
     getModuleActions(module) {
       return this.getModuleSettings(module).actions.map((action) => {
         const holder = {
-          resource: this.getTranslationForResourceSingular(module),
+          resource: this.getTranslationForResourceSingular(module)
         }
         action.label = this.getTranslation(action.label, 1, holder, action.label)
         return action
@@ -406,8 +429,8 @@ export default {
         name: 'crud-module-detail',
         params: {
           module: this.module,
-          id: this.getModulePrimaryKeyValue(module),
-        },
+          id: this.getModulePrimaryKeyValue(module)
+        }
       }
     },
     /**
@@ -453,7 +476,7 @@ export default {
     getModuleApiUrlUpdate(module) {
       return [
         this.getModuleApiUrlCreate(module),
-        this.getModulePrimaryKeyValue(module),
+        this.getModulePrimaryKeyValue(module)
       ].join('/')
     },
     /**
@@ -518,7 +541,7 @@ export default {
     failed(response) {
       this.error(
         this.getTranslation(response.message, 1, {
-          resource: this.getTranslationForResourceSingular(this.module),
+          resource: this.getTranslationForResourceSingular(this.module)
         })
       )
       if (!response.isSessionExpired) {
@@ -532,7 +555,7 @@ export default {
       if (route) {
         this.$router.push({
           name: route,
-          query: { redirect: this.$route.fullPath },
+          query: { redirect: this.$route.fullPath }
         })
       }
 
@@ -558,6 +581,6 @@ export default {
         response.reset()
       }
       this.$emit('found', response)
-    },
-  },
+    }
+  }
 }
