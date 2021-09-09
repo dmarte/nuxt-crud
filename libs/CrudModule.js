@@ -1,4 +1,3 @@
-import pluralize from 'pluralize'
 import CrudField from './CrudField'
 /**
  * This class represent a base wrapper
@@ -13,8 +12,6 @@ export default class CrudModule {
    * @param {Object} options
    */
   constructor (name, options = {}) {
-    options.name = pluralize.plural(name.toLowerCase())
-
     this.$options = Object.assign(
       {
         name: null,

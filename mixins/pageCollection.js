@@ -1,16 +1,16 @@
+import _ from 'lodash'
+import CrudResponse from '../libs/CrudResponse'
 import module from './module'
 import translator from './translator'
-import CrudResponse from '../libs/CrudResponse'
-import _ from 'lodash'
 export default {
   mixins: [module, translator],
   props: {
     module: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
-  data() {
+  data () {
     return {
       collection: [],
       formOpened: false,
@@ -19,16 +19,16 @@ export default {
       response: new CrudResponse(),
       fetching: false,
       searching: undefined,
-      meta: { total: 0, lastPage: 0 },
+      meta: { total: 0, lastPage: 0 }
     }
   },
   watch: {
-    '$route.query': '$fetch',
+    '$route.query': '$fetch'
   },
-  beforeRouteEnter(__, _, next) {
-    next((vm) => vm.initialize())
+  beforeRouteEnter (__, _, next) {
+    next(vm => vm.initialize())
   },
-  beforeRouteUpdate(__, _, next) {
+  beforeRouteUpdate (__, _, next) {
     this.resetCancelToken()
     next()
   },
@@ -36,13 +36,13 @@ export default {
     /**
      * @returns {String}
      */
-    getQuerySearch() {
+    getQuerySearch () {
       return this.$route.query.search || null
     },
     /**
      * @returns {string}
      */
-    getQuerySortBy() {
+    getQuerySortBy () {
       if (this.$route.query.sort_by) {
         return this.$route.query.sort_by
       }
@@ -54,7 +54,7 @@ export default {
     /**
      * @returns {boolean}
      */
-    getQuerySortDesc() {
+    getQuerySortDesc () {
       if (this.$route.query.sort_desc) {
         return String(this.$route.query.sort_desc) === 'true'
       }
@@ -64,7 +64,7 @@ export default {
     /**
      * @returns {number}
      */
-    getQueryPerPage() {
+    getQueryPerPage () {
       return parseInt(
         this.$route.query.per_page ||
           this.getModuleSettings(this.module).perPage ||
@@ -74,19 +74,19 @@ export default {
     /**
      * @returns {number}
      */
-    getQueryCurrentPage() {
+    getQueryCurrentPage () {
       return parseInt(this.$route.query.current_page || 1)
     },
     /**
      * Get the current query string in the route.
      * @returns {Object}
      */
-    getQueryString() {
+    getQueryString () {
       return {
         ...this.getQueryModel(),
         search: this.getQuerySearch(),
         sort_by: this.getQuerySortBy(),
-        sort_desc: this.getQuerySortDesc(),
+        sort_desc: this.getQuerySortDesc()
       }
     },
     /**
@@ -94,10 +94,10 @@ export default {
      *
      * @returns {{per_page: number, page: number}}
      */
-    getQueryPagination() {
+    getQueryPagination () {
       return {
         per_page: this.getQueryPerPage(),
-        page: this.getQueryCurrentPage(),
+        page: this.getQueryCurrentPage()
       }
     },
     /**
@@ -105,13 +105,13 @@ export default {
      *
      * @returns {void}
      */
-    initialize() {},
+    initialize () {},
     /**
      * The base model for the query string filters.
      * NOTE: This is to prevent override the required ones.
      * @returns {Object}
      */
-    getQueryModel() {
+    getQueryModel () {
       return {}
     },
     /**
@@ -120,14 +120,14 @@ export default {
      * @param {Object} filters
      * @returns {Promise<void>}
      */
-    async whenFilter(filters = {}) {
+    async whenFilter (filters = {}) {
       await this.$router.push({
         name: this.$route.name,
         params: this.$route.params,
         query: {
           ...this.getQueryString(),
-          ...filters,
-        },
+          ...filters
+        }
       })
     },
     /**
@@ -135,7 +135,7 @@ export default {
      * @param {String} text
      * @returns {void}
      */
-    whenSearching(text = '') {
+    whenSearching (text = '') {
       if (this.searching) {
         clearTimeout(this.searching)
       }
@@ -150,7 +150,7 @@ export default {
      * @param {CrudResponse?} response
      * @returns {void}
      */
-    whenCancelled(response) {
+    whenCancelled (response) {
       this.cancelled(response)
     },
     /**
@@ -159,9 +159,9 @@ export default {
      * @param {Object} item
      * @returns {void}
      */
-    whenDestroyed(item) {
+    whenDestroyed (item) {
       this.collection = this.collection.filter(
-        (element) => element.id !== item.id
+        element => element.id !== item.id
       )
       this.destroyed(item)
     },
@@ -172,12 +172,12 @@ export default {
      * @param {Object} item
      * @returns {void}
      */
-    whenUpdated(item) {
+    whenUpdated (item) {
       if (item.data) {
         item = item.data
       }
       const index = this.collection.findIndex(
-        (element) => element.id === item.id
+        element => element.id === item.id
       )
       if (index < 0) {
         return
@@ -191,7 +191,7 @@ export default {
      * @param {Object} item
      * @returns {void}
      */
-    whenCreated(item) {
+    whenCreated (item) {
       if (item.data) {
         item = item.data
       }
@@ -203,7 +203,7 @@ export default {
      * @param {CrudResponse} response
      * @returns {void}
      */
-    whenFailed(response) {
+    whenFailed (response) {
       this.failed(response)
     },
     /**
@@ -211,7 +211,7 @@ export default {
      * @param {object} item
      * @returns {void}
      */
-    select(item) {
+    select (item) {
       this.model = _.cloneDeep(item)
     },
     /**
@@ -220,7 +220,7 @@ export default {
      * @param {any} item
      * @returns {void}
      */
-    wantsUpdate(item) {
+    wantsUpdate (item) {
       this.select(item)
       this.formOpened = true
     },
@@ -230,7 +230,7 @@ export default {
      * @param {Object}item
      * @returns {void}
      */
-    wantsDetail(item) {
+    wantsDetail (item) {
       this.select(item)
       this.$router.push(this.getModuleRouteDetail(this.module))
     },
@@ -238,7 +238,7 @@ export default {
      * Regenerate the request cancellation token.
      * @returns {void}
      */
-    resetCancelToken() {
+    resetCancelToken () {
       this.cancelToken.cancel()
       this.cancelToken = this.$axios.CancelToken.source()
     },
@@ -250,10 +250,10 @@ export default {
      * @param {Object} item
      * @returns {Object}
      */
-    merge(item) {
+    merge (item) {
       item.flags = {
         deleting: false,
-        editing: false,
+        editing: false
       }
       return item
     },
@@ -261,7 +261,7 @@ export default {
      * Generate all the columns that should be used in the collection.
      * @returns {Array}
      */
-    columns() {
+    columns () {
       return [
         ...this.getModuleFieldsUsedInIndex(this.module).map((item) => {
           item.divider = !!this.stripped
@@ -275,22 +275,22 @@ export default {
           groupable: false,
           divider: false,
           align: 'end',
-          cellClass: 'text-right',
-        },
+          cellClass: 'text-right'
+        }
       ]
     },
     /**
      * Indicate the relationships that should be loaded.
      * @returns {Array}
      */
-    relations() {
+    relations () {
       return []
     },
     /**
      * Additional params that should be shared with the module store.
      * @returns {Object}
      */
-    params() {
+    params () {
       return {}
     },
     /**
@@ -299,7 +299,7 @@ export default {
      * @param {String} column
      * @returns {Promise<void>}
      */
-    async sortBy(column) {
+    async sortBy (column) {
       return await this.whenFilter({ sort_by: column })
     },
     /**
@@ -308,7 +308,7 @@ export default {
      * @param {boolean} enabled
      * @returns {Promise<void>}
      */
-    async sortDesc(enabled) {
+    async sortDesc (enabled) {
       return await this.whenFilter({ sort_desc: !!enabled })
     },
     /**
@@ -316,7 +316,7 @@ export default {
      *
      * @returns {Promise<void>}
      */
-    async collect() {
+    async collect () {
       this.resetCancelToken()
       this.fetching = true
       try {
@@ -327,9 +327,9 @@ export default {
               ...this.getQueryString(),
               ...this.getQueryPagination(),
               with: this.relations(),
-              paginator: true,
+              paginator: true
             },
-            cancelToken: this.cancelToken.token,
+            cancelToken: this.cancelToken.token
           }
         )
         this.meta.total = response.meta.total || 0
@@ -344,6 +344,6 @@ export default {
       } finally {
         this.fetching = false
       }
-    },
-  },
+    }
+  }
 }
