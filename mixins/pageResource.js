@@ -196,8 +196,7 @@ export default {
       this.response.reset()
       this.processing = true
       try {
-        const rep = await this.show()
-        this.model = rep.data
+        this.model = await this.show()
         this.whenFinded(this.model)
       } catch (exception) {
         this.response.parse(exception)

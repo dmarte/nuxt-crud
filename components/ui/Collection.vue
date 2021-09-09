@@ -10,6 +10,7 @@
         :dense="dense"
         :display-mode="displayMode"
         :actions="actions"
+        standalone
       />
     </v-toolbar>
     <v-toolbar flat>

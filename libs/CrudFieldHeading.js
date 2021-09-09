@@ -1,7 +1,8 @@
 import CrudField from './CrudField'
 
 export default class CrudFieldHeading extends CrudField {
-  constructor(fieldName) {
+  constructor (fieldName) {
     super(fieldName, 'CFieldHeading')
+    this.hideOnIndex()
   }
 }

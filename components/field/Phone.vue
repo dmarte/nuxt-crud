@@ -1,5 +1,16 @@
 <template>
-  <div>{{ value }}</div>
+  <v-text-field
+    :label="label"
+    :value="value"
+    :disabled="disabled"
+    :placeholder="placeholder"
+    :error-messages="response.feedback(name)"
+    :hint="hint"
+    :dense="dense"
+    type="number"
+    clearable
+    @change="whenChange"
+  />
 </template>
 
 <script>

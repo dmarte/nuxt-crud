@@ -56,6 +56,18 @@ export default {
     response: {
       type: CrudResponse,
       required: true
+    },
+    settings: {
+      type: Object,
+      default: () => ({})
+    },
+    items: {
+      type: Array,
+      default: () => []
+    },
+    dense: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {

@@ -1,17 +1,15 @@
 <template>
-  <c-field-text
-    v-bind='$attrs'
-    :id="id"
+  <v-text-field
     :name="name"
     :placeholder="placeholder"
     :label="label"
     :value="value"
-    :response="response"
+    :response="response.feedback(name)"
     :disabled="disabled"
-    :min="0"
-    :max="0"
+    :min="min"
+    :max="max"
     type="number"
-    v-on='$listeners'
+    v-on="$listeners"
     @change="whenChange"
   />
 </template>
@@ -25,12 +23,12 @@ export default {
   props: {
     min: {
       type: Number,
-      default: () => undefined,
+      default: () => undefined
     },
     max: {
       type: Number,
-      default: () => undefined,
-    },
-  },
+      default: () => undefined
+    }
+  }
 }
 </script>

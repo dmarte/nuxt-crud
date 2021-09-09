@@ -2,7 +2,8 @@
   <div>
     <template v-for="(action, index) in collectionStandalone">
       <v-btn
-        :key="`action_${action.label}_inline_${index}`"
+        v-if="standalone"
+        :key="`action_${action.label}_standalone_${index}`"
         :small="dense"
         :title="action.label"
         :icon="!!!action.label"
@@ -21,9 +22,9 @@
     <template v-for="(action, index) in collectionInline">
       <v-btn
         :key="`action_${action.label}_inline_${index}`"
-        :small="dense"
+        :small="dense || displayMode === DISPLAY_MODE_INDEX && !!!action.label"
         :title="action.label"
-        :icon="!!!action.label"
+        :icon="!!!action.label || displayMode === DISPLAY_MODE_INDEX"
         :to="route(action)"
         exact
         text
@@ -33,7 +34,9 @@
         <v-icon v-if="action.icon">
           {{ action.icon }}
         </v-icon>
-        {{ action.label }}
+        <template v-if="displayMode !== DISPLAY_MODE_INDEX">
+          {{ action.label }}
+        </template>
       </v-btn>
     </template>
     <v-menu v-if="collectionNotInline.length > 0">
@@ -146,6 +149,11 @@ export default {
         ...this.params(action),
         module: this.module
       }
+
+      if (action.route.name === 'crud-module-detail') {
+        action.route.params.id = this.primaryKey
+      }
+
       if (!has(action.route, 'query')) {
         action.route.query = {}
       }

@@ -1,4 +1,9 @@
 import CrudField from './CrudField'
+import CrudActionCreate from './actions/CrudActionCreate'
+import CrudActionDetail from './actions/CrudActionDetail'
+import CrudActionUpdate from './actions/CrudActionUpdate'
+import CrudActionIndex from './actions/CrudActionIndex'
+import CrudActionDelete from './actions/CrudActionDelete'
 /**
  * This class represent a base wrapper
  * to configure a module.
@@ -39,6 +44,19 @@ export default class CrudModule {
       },
       options
     )
+  }
+
+  /**
+   * Set the default crud actions.
+   * @returns {CrudModule}
+   */
+  withDefaultActions () {
+    this.action(new CrudActionCreate())
+    this.action(new CrudActionDetail())
+    this.action(new CrudActionUpdate())
+    this.action(new CrudActionIndex())
+    this.action(new CrudActionDelete())
+    return this
   }
 
   /**

@@ -3,6 +3,7 @@
     <template #activator="{ on, attrs }">
       <v-btn
         :key="`action_${action.label}_${type}_${index}`"
+        v-bin="attrs"
         :small="dense"
         :title="action.label"
         :icon="!!!action.label"
@@ -10,7 +11,6 @@
         text
         type="button"
         v-on="on"
-        v-bin="attrs"
       >
         <v-icon v-if="action.icon">
           {{ action.icon }}
@@ -53,7 +53,7 @@
     exact
     text
     type="button"
-    @click.prevent="dispatch(action)"
+    @click.prevent="$emit('click', action)"
   >
     <v-icon v-if="action.icon">
       {{ action.icon }}
@@ -82,8 +82,8 @@ export default {
     }
   },
   computed: {
-    type() {
-      if(this.action.standalone) {
+    type () {
+      if (this.action.standalone) {
         return 'standalone'
       }
       if (this.action.inline) {
@@ -92,10 +92,6 @@ export default {
 
       return 'menu'
     }
-  },
+  }
 }
 </script>
-
-<style scoped>
-
-</style>

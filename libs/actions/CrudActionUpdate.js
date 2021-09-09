@@ -1,7 +1,7 @@
 import CrudAction from './CrudAction'
 
 export default class CrudActionUpdate extends CrudAction {
-  constructor() {
+  constructor () {
     super()
     this
       .icon('mdi-pencil')
@@ -9,6 +9,7 @@ export default class CrudActionUpdate extends CrudAction {
       .route({ name: 'crud-module-update' })
       .setParamFromPrimaryKey()
       .setQueryFromRoute('fullPath', 'redirect')
+      .inline()
       .hideWhenUpdating()
       .hideWhenCreating()
   }

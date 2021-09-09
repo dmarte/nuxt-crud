@@ -12,33 +12,35 @@
     :busy="$fetchState.pending"
     :response="response"
   >
+    <pre>
+      {{ model }}
+    </pre>
     <template #toolbar>
       <c-ui-actions-render
         :module="module"
         :display-mode="displayMode"
         :actions="actions.filter(({standalone}) => standalone)"
-        :dense='settings.dense'
-        :value='model'
+        :dense="settings.dense"
+        :value="model"
         standalone
-
       />
       <c-ui-actions-render
         :module="module"
         :display-mode="displayMode"
         :actions="actions"
-        :dense='settings.dense'
-        :value='model'
-        @destroy='whenDestroy'
+        :dense="settings.dense"
+        :value="model"
+        @destroy="whenDestroy"
       />
     </template>
   </c-ui-detail>
 </template>
 
 <script>
+import _ from 'lodash'
 import pageResource from '../mixins/pageResource'
 import CUiDetail from '../components/ui/Detail'
 import CUiActionsRender from '../components/ui/ActionsRender'
-import _ from 'lodash'
 export default {
   name: 'PageCrudDetailPage',
   components: { CUiActionsRender, CUiDetail },
@@ -46,32 +48,32 @@ export default {
   props: {
     module: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
-  async fetch() {
+  async fetch () {
     await this.find()
   },
   computed: {
-    settings() {
+    settings () {
       return this.getModuleSettings(this.module)
     },
-    actions() {
+    actions () {
       return this.getModuleActions(this.module)
     },
-    displayMode() {
+    displayMode () {
       return this.DISPLAY_MODE_DETAIL
-    },
+    }
   },
   methods: {
-    mapModuleFieldToDetail(field, resource) {
+    mapModuleFieldToDetail (field, resource) {
       field.value = this.getModelPath(
         field.name,
         _.get(resource, field.name, null)
       )
       return field
-    },
-  },
+    }
+  }
 }
 </script>
 

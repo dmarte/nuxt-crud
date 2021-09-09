@@ -1,5 +1,5 @@
 export default class CrudAction {
-  constructor() {
+  constructor () {
     this.$options = {
       module: null,
       icon: null,
@@ -13,7 +13,7 @@ export default class CrudAction {
       confirmation: {
         enabled: false,
         textTitle: 'crud.action.title',
-        textBody:null,
+        textBody: null,
         textSubmit: 'crud.action.body',
         textCancel: 'crud.action.cancel'
       },
@@ -24,81 +24,81 @@ export default class CrudAction {
         updating: false
       },
       vuex: {
-        action: undefined,
-      },
+        action: undefined
+      }
     }
-      this.setParamFromRoute('params.module', 'module')
+    this.setParamFromRoute('params.module', 'module')
   }
 
-  dynamicParam(prefix, path, name) {
+  dynamicParam (prefix, path, name) {
     const key = prefix ? `${prefix}.${path}` : path
     this.$options.params[key] = name
     return this
   }
 
-  dynamicQuery(prefix, path, name) {
+  dynamicQuery (prefix, path, name) {
     const key = prefix ? `${prefix}.${path}` : path
     this.$options.query[key] = name
     return this
   }
 
-  setParamFromVuexState(statePath, paramName) {
+  setParamFromVuexState (statePath, paramName) {
     return this.dynamicParam('$store.state', statePath, paramName)
   }
 
-  setParamFromVuexGetter(getterPath, paramName) {
+  setParamFromVuexGetter (getterPath, paramName) {
     return this.dynamicParam('$store.getters', getterPath, paramName)
   }
 
-  setParamFromRoute(routePath, paramName) {
+  setParamFromRoute (routePath, paramName) {
     return this.dynamicParam('$route', routePath, paramName)
   }
 
-  setParamFromComponent(componentPath, paramName) {
+  setParamFromComponent (componentPath, paramName) {
     return this.dynamicParam('', componentPath, paramName)
   }
 
-  setQueryFromVuexState(statePath, paramName) {
+  setQueryFromVuexState (statePath, paramName) {
     return this.dynamicQuery('$store.state', statePath, paramName)
   }
 
-  setQueryFromVuexGetter(getterPath, paramName) {
+  setQueryFromVuexGetter (getterPath, paramName) {
     return this.dynamicQuery('$store.getters', getterPath, paramName)
   }
 
-  setQueryFromRoute(routePath, paramName) {
+  setQueryFromRoute (routePath, paramName) {
     return this.dynamicQuery('$route', routePath, paramName)
   }
 
-  setQueryFromComponent(componentPath, paramName) {
+  setQueryFromComponent (componentPath, paramName) {
     return this.dynamicQuery('', componentPath, paramName)
   }
 
-  setParamFromPrimaryKey() {
+  setParamFromPrimaryKey () {
     return this.setParamFromComponent('primaryKey', 'id')
   }
 
-  withConfirmation() {
+  withConfirmation () {
     this.$options.confirmation.enabled = true
     return this
   }
 
-  confirmationTextTitle(text) {
+  confirmationTextTitle (text) {
     this.$options.confirmation.textTitle = text
     return this
   }
 
-  confirmationTextBody(text) {
+  confirmationTextBody (text) {
     this.$options.confirmation.textBody = text
     return this
   }
 
-  confirmationTextCancel(text) {
+  confirmationTextCancel (text) {
     this.$options.confirmation.textCancel = text
     return this
   }
 
-  confirmationTextSubmit(text) {
+  confirmationTextSubmit (text) {
     this.$options.confirmation.textSubmit = text
     return this
   }
@@ -108,7 +108,7 @@ export default class CrudAction {
    * @param {String} name
    * @returns {CrudAction}
    */
-  module(name) {
+  module (name) {
     this.$options.module = name
     return this
   }
@@ -117,7 +117,7 @@ export default class CrudAction {
    * Hide this action from index view.
    * @returns {CrudAction}
    */
-  hideOnIndex() {
+  hideOnIndex () {
     this.$options.visibility.index = false
     return this
   }
@@ -126,17 +126,17 @@ export default class CrudAction {
    * Hide his action from detail page.
    * @returns {CrudAction}
    */
-  hideOnDetail() {
+  hideOnDetail () {
     this.$options.visibility.detail = false
     return this
   }
 
-  hideWhenCreating() {
+  hideWhenCreating () {
     this.$options.visibility.creating = false
     return this
   }
 
-  hideWhenUpdating(){
+  hideWhenUpdating () {
     this.$options.visibility.updating = false
     return this
   }
@@ -145,7 +145,7 @@ export default class CrudAction {
    * Show this action when creating a new resource.
    * @returns {CrudAction}
    */
-  showWhenCreating() {
+  showWhenCreating () {
     this.$options.visibility.creating = true
     return this
   }
@@ -154,7 +154,7 @@ export default class CrudAction {
    * Show this action when updating the resource.
    * @returns {CrudAction}
    */
-  showWhenUpdating(){
+  showWhenUpdating () {
     this.$options.visibility.updating = true
     return this
   }
@@ -163,7 +163,7 @@ export default class CrudAction {
    * Show the action on index.
    * @returns {CrudAction}
    */
-  showOnIndex() {
+  showOnIndex () {
     this.$options.visibility.index = true
     return this
   }
@@ -172,7 +172,7 @@ export default class CrudAction {
    * Show this action on detail.
    * @returns {CrudAction}
    */
-  showOnDetail() {
+  showOnDetail () {
     this.$options.visibility.detail = true
     return this
   }
@@ -181,7 +181,7 @@ export default class CrudAction {
    * Show this action only on detail.
    * @returns {CrudAction}
    */
-  onlyOnDetail() {
+  onlyOnDetail () {
     this
       .showOnDetail()
       .hideOnIndex()
@@ -195,7 +195,7 @@ export default class CrudAction {
    * Set the action to be displayed inline of toolbar.
    * @returns {CrudAction}
    */
-  inline() {
+  inline () {
     this.$options.inline = true
     return this
   }
@@ -206,7 +206,7 @@ export default class CrudAction {
    * @param {String} eventName
    * @returns {CrudAction}
    */
-  emits(eventName) {
+  emits (eventName) {
     this.$options.emits = eventName
     return this
   }
@@ -217,7 +217,7 @@ export default class CrudAction {
    * @param {String} name
    * @returns {CrudAction}
    */
-  dispatcher(name) {
+  dispatcher (name) {
     this.$options.vuex.action = name
     return this
   }
@@ -228,7 +228,7 @@ export default class CrudAction {
    * @param {Vue.$route} route
    * @returns {CrudAction}
    */
-  route(route) {
+  route (route) {
     this.$options.route = route
     return this
   }
@@ -239,7 +239,7 @@ export default class CrudAction {
    *
    * @returns {CrudAction}
    */
-  standalone() {
+  standalone () {
     this.$options.standalone = true
     return this
   }
@@ -249,7 +249,7 @@ export default class CrudAction {
    * @param {String} name
    * @returns {CrudAction}
    */
-  icon(name) {
+  icon (name) {
     this.$options.icon = name
     return this
   }
@@ -259,7 +259,7 @@ export default class CrudAction {
    * @param {String} text
    * @returns {CrudAction}
    */
-  label(text) {
+  label (text) {
     this.$options.label = text
     return this
   }
@@ -269,7 +269,7 @@ export default class CrudAction {
    *
    * @returns {CrudAction.$options}
    */
-  toObject() {
+  toObject () {
     return this.$options
   }
 }
