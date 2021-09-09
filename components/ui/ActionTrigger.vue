@@ -10,7 +10,7 @@
     <template #activator="{ on, attrs }">
       <v-btn
         :key="`action_${action.label}_${type}_${index}`"
-        v-bin="attrs"
+        v-bind="attrs"
         :small="dense"
         :title="action.label"
         :icon="!!!action.label"
@@ -35,6 +35,7 @@
         {{ action.confirmation.textBody }}
       </v-card-text>
       <v-card-actions>
+        <v-spacer />
         <v-btn
           :small="dense"
           :title="action.label"
@@ -47,6 +48,8 @@
         <v-btn
           :small="dense"
           :title="action.label"
+          :color="action.confirmation.color"
+          :to="to"
           type="button"
           text
           exact
@@ -63,7 +66,7 @@
     :small="dense"
     :title="action.label"
     :icon="!!!action.label"
-    :to="route(action)"
+    :to="to"
     exact
     text
     type="button"
@@ -79,11 +82,10 @@
 </template>
 
 <script>
-import action from '../../mixins/action'
 import module from '../../mixins/module'
 export default {
   name: 'CUiActionTrigger',
-  mixins: [action, module],
+  mixins: [module],
   props: {
     index: {
       type: Number,
@@ -96,6 +98,10 @@ export default {
     action: {
       type: Object,
       required: true
+    },
+    to: {
+      type: Object,
+      default: null
     },
     displayMode: {
       type: String,

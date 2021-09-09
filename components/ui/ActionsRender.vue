@@ -2,10 +2,11 @@
   <div>
     <template v-for="(action, index) in collectionStandalone">
       <c-ui-action-trigger
-        :key="`action_inline_${index}`"
+        :key="`action_standalone_${index}`"
         :dense="dense"
         :action="action"
         :index="index"
+        :to="route(action)"
         :display-mode="displayMode"
         @click="dispatch"
       />
@@ -16,6 +17,7 @@
         :dense="dense"
         :action="action"
         :index="index"
+        :to="route(action)"
         :display-mode="displayMode"
         @click="dispatch"
       />
@@ -97,6 +99,9 @@ export default {
       })
     },
     collectionStandalone () {
+      if (!this.standalone) {
+        return []
+      }
       return this.actions.filter(({ standalone, visibility }) => visibility[this.displayMode.toLowerCase()] && standalone)
     },
     collectionInline () {

@@ -75,6 +75,7 @@
               :display-mode="displayMode"
               :module="module"
               :actions="actions"
+              :dense="dense"
             />
           </template>
         </v-data-table>

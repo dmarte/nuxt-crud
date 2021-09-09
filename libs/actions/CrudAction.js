@@ -12,6 +12,7 @@ export default class CrudAction {
       query: {},
       confirmation: {
         enabled: false,
+        color: 'primary',
         textTitle: 'crud.title.confirm',
         textBody: null,
         textSubmit: 'crud.actions.confirm',

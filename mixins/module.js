@@ -226,6 +226,10 @@ export default {
           holder,
           action.label
         )
+        action.confirmation.textBody = this.getTranslation(action.confirmation.textBody, 1, holder, undefined)
+        action.confirmation.textSubmit = this.getTranslation(action.confirmation.textSubmit, 1, holder, undefined)
+        action.confirmation.textCancel = this.getTranslation(action.confirmation.textCancel, 1, holder, undefined)
+        action.confirmation.textTitle = this.getTranslation(action.confirmation.textTitle, 1, holder, undefined)
         return action
       })
     },
