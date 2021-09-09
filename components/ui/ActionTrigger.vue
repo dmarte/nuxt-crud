@@ -13,7 +13,7 @@
         v-bind="attrs"
         :small="dense"
         :title="action.label"
-        :icon="!!!action.label"
+        :icon="!!!action.label || action.inline && displayMode === DISPLAY_MODE_INDEX"
         exact
         text
         type="button"
@@ -51,8 +51,9 @@
           :color="action.confirmation.color"
           :to="to"
           type="button"
-          text
+          elevation="0"
           exact
+          ripple
           @click.prevent="$emit('click', action)"
         >
           {{ action.confirmation.textSubmit }}
@@ -65,11 +66,11 @@
     :key="`action_${action.label}_inline_${index}`"
     :small="dense"
     :title="action.label"
-    :icon="!!!action.label"
+    :icon="!!!action.label || action.inline && displayMode === DISPLAY_MODE_INDEX"
     :to="to"
+    type="button"
     exact
     text
-    type="button"
     @click.prevent="$emit('click', action)"
   >
     <v-icon v-if="action.icon">

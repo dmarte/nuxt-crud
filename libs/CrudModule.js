@@ -29,6 +29,7 @@ export default class CrudModule {
         routes: {
           login: 'login'
         },
+        settings: {},
         hooks: {
           beforeCreate: undefined,
           beforeUpdate: undefined
@@ -51,10 +52,10 @@ export default class CrudModule {
    * @returns {CrudModule}
    */
   withDefaultActions () {
+    this.action(new CrudActionIndex())
     this.action(new CrudActionCreate())
     this.action(new CrudActionDetail())
     this.action(new CrudActionUpdate())
-    this.action(new CrudActionIndex())
     this.action(new CrudActionDelete())
     return this
   }
@@ -117,7 +118,7 @@ export default class CrudModule {
    * @throws Error
    */
   field (field) {
-    if (!field instanceof CrudField) {
+    if (!(field instanceof CrudField)) {
       throw new TypeError('The field should be an instance of CrudHead object.')
     }
     field.dense(this.$options.dense)

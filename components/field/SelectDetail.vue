@@ -12,8 +12,10 @@
 </template>
 
 <script>
+import field from '../../mixins/field'
 export default {
-  name: 'CFieldSelectDetail'
+  name: 'CFieldSelectDetail',
+  mixins: [field]
 }
 </script>
 

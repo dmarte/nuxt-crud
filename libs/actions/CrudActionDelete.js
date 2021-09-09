@@ -12,5 +12,8 @@ export default class CrudActionDelete extends CrudAction {
       .hideWhenUpdating()
       .hideWhenCreating()
       .withConfirmation()
+      .confirmationTextTitle('crud.title.destroy')
+      .confirmationTextSubmit('crud.actions.destroy')
+      .confirmationStyleDestructive()
   }
 }

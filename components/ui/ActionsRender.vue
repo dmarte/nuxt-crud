@@ -138,9 +138,7 @@ export default {
         module: this.module
       }
 
-      if (action.route.name === 'crud-module-detail') {
-        action.route.params.id = this.primaryKey
-      }
+      action.route.params.id = this.primaryKey
 
       if (!has(action.route, 'query')) {
         action.route.query = {}
