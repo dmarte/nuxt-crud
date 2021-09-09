@@ -209,6 +209,7 @@ export default {
     getModuleSettings (module) {
       return (
         this.$crud.modules.find(({ name }) => name === module) || {
+          primaryKey: null,
           head: [],
           actions: []
         }
@@ -392,7 +393,7 @@ export default {
      */
     getModulePrimaryKeyName (module) {
       return (
-        this.$crud.modules.find(({ name }) => name === module).primaryKey ||
+        this.getModuleSettings(module).primaryKey ||
         'id'
       )
     },
