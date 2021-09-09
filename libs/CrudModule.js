@@ -14,7 +14,7 @@ export default class CrudModule {
   constructor (name, options = {}) {
     this.$options = Object.assign(
       {
-        name: null,
+        name: options.name,
         dense: false,
         fullscreen: false,
         width: 250, // Size of the form in modal
