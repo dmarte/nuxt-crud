@@ -1,43 +1,24 @@
 <template>
   <div>
     <template v-for="(action, index) in collectionStandalone">
-      <v-btn
-        v-if="standalone"
-        :key="`action_${action.label}_standalone_${index}`"
-        :small="dense"
-        :title="action.label"
-        :icon="!!!action.label"
-        :to="route(action)"
-        exact
-        text
-        type="button"
-        @click.prevent="dispatch(action)"
-      >
-        <v-icon v-if="action.icon">
-          {{ action.icon }}
-        </v-icon>
-        {{ action.label }}
-      </v-btn>
+      <c-ui-action-trigger
+        :key="`action_inline_${index}`"
+        :dense="dense"
+        :action="action"
+        :index="index"
+        :display-mode="displayMode"
+        @click="dispatch"
+      />
     </template>
     <template v-for="(action, index) in collectionInline">
-      <v-btn
-        :key="`action_${action.label}_inline_${index}`"
-        :small="dense || displayMode === DISPLAY_MODE_INDEX && !!!action.label"
-        :title="action.label"
-        :icon="!!!action.label || displayMode === DISPLAY_MODE_INDEX"
-        :to="route(action)"
-        exact
-        text
-        type="button"
-        @click.prevent="dispatch(action)"
-      >
-        <v-icon v-if="action.icon">
-          {{ action.icon }}
-        </v-icon>
-        <template v-if="displayMode !== DISPLAY_MODE_INDEX">
-          {{ action.label }}
-        </template>
-      </v-btn>
+      <c-ui-action-trigger
+        :key="`action_inline_${index}`"
+        :dense="dense"
+        :action="action"
+        :index="index"
+        :display-mode="displayMode"
+        @click="dispatch"
+      />
     </template>
     <v-menu v-if="collectionNotInline.length > 0">
       <template #activator="{ on, attrs }">
@@ -73,8 +54,10 @@
 <script>
 import { get, isObject, has } from 'lodash'
 import module from '../../mixins/module'
+import CUiActionTrigger from './ActionTrigger'
 export default {
   name: 'CUiActionsRender',
+  components: { CUiActionTrigger },
   mixins: [module],
   props: {
     value: {

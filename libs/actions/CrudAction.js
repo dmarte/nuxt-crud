@@ -12,10 +12,10 @@ export default class CrudAction {
       query: {},
       confirmation: {
         enabled: false,
-        textTitle: 'crud.action.title',
+        textTitle: 'crud.title.confirm',
         textBody: null,
-        textSubmit: 'crud.action.body',
-        textCancel: 'crud.action.cancel'
+        textSubmit: 'crud.actions.confirm',
+        textCancel: 'crud.actions.cancel'
       },
       visibility: {
         index: true,
@@ -80,6 +80,11 @@ export default class CrudAction {
 
   withConfirmation () {
     this.$options.confirmation.enabled = true
+    return this
+  }
+
+  confirmationStyleDestructive () {
+    this.$options.confirmation.color = 'error'
     return this
   }
 

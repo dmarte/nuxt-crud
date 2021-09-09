@@ -1,5 +1,12 @@
 <template>
-  <v-dialog v-if="action.confirmation.enabled">
+  <v-dialog
+    v-if="action.confirmation.enabled"
+    ref="modal"
+    max-width="350"
+    eager
+    persistent
+    retain-focus
+  >
     <template #activator="{ on, attrs }">
       <v-btn
         :key="`action_${action.label}_${type}_${index}`"
@@ -15,7 +22,9 @@
         <v-icon v-if="action.icon">
           {{ action.icon }}
         </v-icon>
-        {{ action.label }}
+        <template v-if="displayMode !== DISPLAY_MODE_INDEX || !action.inline">
+          {{ action.label }}
+        </template>
       </v-btn>
     </template>
     <v-card>
@@ -26,16 +35,21 @@
         {{ action.confirmation.textBody }}
       </v-card-text>
       <v-card-actions>
-        <v-btn type="button">
+        <v-btn
+          :small="dense"
+          :title="action.label"
+          type="button"
+          text
+          @click.prevent="$refs.modal.save()"
+        >
           {{ action.confirmation.textCancel }}
         </v-btn>
         <v-btn
           :small="dense"
           :title="action.label"
-          :icon="!!!action.label"
           type="button"
-          exact
           text
+          exact
           @click.prevent="$emit('click', action)"
         >
           {{ action.confirmation.textSubmit }}
@@ -58,15 +72,18 @@
     <v-icon v-if="action.icon">
       {{ action.icon }}
     </v-icon>
-    {{ action.label }}
+    <template v-if="displayMode !== DISPLAY_MODE_INDEX || !action.inline">
+      {{ action.label }}
+    </template>
   </v-btn>
 </template>
 
 <script>
 import action from '../../mixins/action'
+import module from '../../mixins/module'
 export default {
   name: 'CUiActionTrigger',
-  mixins: [action],
+  mixins: [action, module],
   props: {
     index: {
       type: Number,
@@ -78,6 +95,10 @@ export default {
     },
     action: {
       type: Object,
+      required: true
+    },
+    displayMode: {
+      type: String,
       required: true
     }
   },
