@@ -1,16 +1,17 @@
 <template>
   <v-card flat>
-    <v-card-title>
-      {{ title }}
+    <v-toolbar flat>
+      <v-toolbar-title>
+        {{ title }}
+      </v-toolbar-title>
       <v-spacer />
       <c-ui-actions-render
         :module="module"
         :dense="dense"
         :display-mode="displayMode"
         :actions="actions"
-        standalone
       />
-    </v-card-title>
+    </v-toolbar>
     <v-toolbar flat>
       <v-btn-toggle>
         <v-btn
@@ -52,23 +53,24 @@
           @update:sort-by="(v) => $emit('sort:by', v)"
         >
           <template
-            v-slot:[`item.${column.value}`]="{ item, value }"
             v-for="column in editableColumns"
+            #[`item.${column.value}`]="{ item, value }"
           >
             <slot :name="`item.${column.value}`" :item="item" :value="value">
               <c-ui-field-render
                 :component="column.field.component"
-                :items='column.field.settings.items'
+                :items="column.field.settings.items"
+                :params="column.field.settings.params"
                 :module="module"
                 :display-mode="displayMode"
                 :value="value"
-                :response='response'
+                :response="response"
               />
             </slot>
           </template>
           <template #item._="{ item }">
             <c-ui-actions-render
-              v-model="item"
+              :value="item"
               :display-mode="displayMode"
               :module="module"
               :actions="actions"
@@ -80,17 +82,16 @@
   </v-card>
 </template>
 <script>
-import CUiOptionsMenu from './OptionsMenu'
 import CUiActionsRender from './ActionsRender'
 import CUiFieldRender from './FieldRender'
 
 export default {
   name: 'CUiCollection',
-  components: { CUiFieldRender, CUiActionsRender, CUiOptionsMenu },
+  components: { CUiFieldRender, CUiActionsRender },
   props: {
     title: {
       type: String,
-      required: true,
+      required: true
     },
     response: {
       type: Object,
@@ -98,19 +99,19 @@ export default {
     },
     displayMode: {
       type: String,
-      required: true,
+      required: true
     },
     module: {
       type: String,
-      required: true,
+      required: true
     },
     value: {
       type: Array,
-      default: () => [],
+      default: () => []
     },
     actions: {
       type: Array,
-      default: () => [],
+      default: () => []
     },
     search: { type: String, default: '' },
     headers: { type: Array, default: () => [] },
@@ -121,13 +122,13 @@ export default {
     dense: { type: Boolean, default: false },
     busy: { type: Boolean, default: false },
     querySortDesc: { type: Boolean, default: false },
-    querySortBy: { type: String, default: 'id' },
+    querySortBy: { type: String, default: 'id' }
   },
   computed: {
-    editableColumns() {
-      return this.headers.filter((i) => i.value !== '_')
-    },
-  },
+    editableColumns () {
+      return this.headers.filter(i => i.value !== '_')
+    }
+  }
 }
 </script>
 

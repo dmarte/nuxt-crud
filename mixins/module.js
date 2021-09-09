@@ -1,8 +1,7 @@
+import _ from 'lodash'
 import CrudHead from '../libs/CrudHead'
 import translator from './translator'
 import messenger from './messenger'
-
-import _ from 'lodash'
 
 export default {
   mixins: [translator, messenger],
@@ -11,21 +10,21 @@ export default {
      * @returns {string}
      * @constructor
      */
-    DISPLAY_MODE_INDEX() {
+    DISPLAY_MODE_INDEX () {
       return CrudHead.DISPLAY_MODE_INDEX
     },
     /**
      * @returns {string}
      * @constructor
      */
-    DISPLAY_MODE_FORM() {
+    DISPLAY_MODE_FORM () {
       return CrudHead.DISPLAY_MODE_FORM
     },
     /**
      * @returns {string}
      * @constructor
      */
-    DISPLAY_MODE_DETAIL() {
+    DISPLAY_MODE_DETAIL () {
       return CrudHead.DISPLAY_MODE_DETAIL
     }
   },
@@ -35,7 +34,7 @@ export default {
      * @param {String} module
      * @returns {String}
      */
-    getModulePageTitle(module) {
+    getModulePageTitle (module) {
       const mode = this.getModuleDisplayMode().toLowerCase()
       let resource = this.getTranslationForResourcePlural(module)
 
@@ -80,7 +79,7 @@ export default {
      *
      * @returns {String}
      */
-    getModuleDisplayMode() {
+    getModuleDisplayMode () {
       // Check if there is any displayMode defined
       // in the current component
       if (!this.displayMode) {
@@ -95,7 +94,7 @@ export default {
      * @param {CrudField.$options} field
      * @returns {CrudField.$options}
      */
-    mapModuleFieldToTranslations(module, field) {
+    mapModuleFieldToTranslations (module, field) {
       field.label = this.getTranslationForFieldLabel(
         module,
         field.name,
@@ -106,20 +105,10 @@ export default {
         field.placeholder
       )
       field.hint = this.getTranslationForFieldHint(module, field.hint)
-      return field
-    },
-    /**
-     *
-     * @param {any} currentValue
-     * @param {any} defaultValue
-     * @returns {any}
-     */
-    resolveFieldValue(currentValue, defaultValue = undefined) {
-      if (field.component === CrudHead.FIELD_TYPE_SELECT && value) {
-        return this.getTranslation(value, 1, {}, currentValue || defaultValue)
+      if (field.settings.valuePath) {
+        field.settings.value = _.get(this, field.settings.valuePath, null)
       }
-
-      return value || defaultValue
+      return field
     },
     /**
      * Transform the current field head to to Vuetify table head.
@@ -128,7 +117,7 @@ export default {
      * @param {{name: String}} head
      * @returns {{text, value}}
      */
-    mapModuleFieldToTableHeader(head) {
+    mapModuleFieldToTableHeader (head) {
       return {
         text: head.label,
         value: head.name,
@@ -137,23 +126,25 @@ export default {
       }
     },
     /**
-     * Transform the current selected field to the list of allowed bindable properties.
+     * Transform the current selected field to the list of allowed bindable
+     * properties.
      *
      * @param {CrudHead.$options} field
      * @param {Object} resource
      * @returns {Object}
      */
-    mapModuleFieldToForm(field, resource) {
+    mapModuleFieldToForm (field, resource) {
       return field
     },
     /**
-     * Transform the current selected field to the list of allowed bindable properties.
+     * Transform the current selected field to the list of allowed bindable
+     * properties.
      *
      * @param {CrudHead.$options} field
      * @param {Object} resource
      * @returns {Object}
      */
-    mapModuleFieldToDetail(field, resource) {
+    mapModuleFieldToDetail (field, resource) {
       return field
     },
     /**
@@ -163,7 +154,7 @@ export default {
      *
      * @returns {{}}
      */
-    getModuleResourceSchema(module, resource) {
+    getModuleResourceSchema (module, resource) {
       const out = {}
       this.getModuleFields(module).forEach((field) => {
         const defaultValue = _.get(field, 'settings.value', null)
@@ -178,8 +169,10 @@ export default {
      * @param {String} fieldName
      * @returns {CrudHead.$options}
      */
-    getModuleFieldByName(module, fieldName) {
-      return this.getModuleFields(module).find(field => field.name === fieldName)
+    getModuleFieldByName (module, fieldName) {
+      return this.getModuleFields(module).find(
+        field => field.name === fieldName
+      )
     },
     /**
      * Get the default value assigned to a given field.
@@ -187,7 +180,7 @@ export default {
      * @param {Object} field
      * @returns {*}
      */
-    getModuleFieldDefaultValue(field) {
+    getModuleFieldDefaultValue (field) {
       if (!field || !field.settings) {
         return null
       }
@@ -213,7 +206,7 @@ export default {
      * @param {String} module
      * @returns {CrudModule.$options}
      */
-    getModuleSettings(module) {
+    getModuleSettings (module) {
       return (
         this.$crud.modules.find(({ name }) => name === module) || {
           head: [],
@@ -221,12 +214,17 @@ export default {
         }
       )
     },
-    getModuleActions(module) {
+    getModuleActions (module) {
       return this.getModuleSettings(module).actions.map((action) => {
         const holder = {
           resource: this.getTranslationForResourceSingular(module)
         }
-        action.label = this.getTranslation(action.label, 1, holder, action.label)
+        action.label = this.getTranslation(
+          action.label,
+          1,
+          holder,
+          action.label
+        )
         return action
       })
     },
@@ -237,8 +235,8 @@ export default {
      * @param {Object} resource The schema of your resource.
      * @returns {Array}
      */
-    getModuleFields(module, resource = {}) {
-      return this.getModuleSettings(module).head.map((field) =>
+    getModuleFields (module, resource = {}) {
+      return this.getModuleSettings(module).head.map(field =>
         this.mapModuleFieldToTranslations(module, field)
       )
     },
@@ -248,19 +246,17 @@ export default {
      * @param {String} module
      * @returns {Array}
      */
-    getModuleFieldsUsedInIndex(module) {
+    getModuleFieldsUsedInIndex (module) {
       return this.getModuleFields(module, {})
-        .filter((field) =>
-          this.isModuleFieldVisibleOnCurrentMode(module, field)
-        )
+        .filter(field => this.isModuleFieldVisibleOnCurrentMode(module, field))
         .map(this.mapModuleFieldToTableHeader)
     },
-    getModuleFieldsUsedInDetail(module, resource) {
+    getModuleFieldsUsedInDetail (module, resource) {
       return this.getModuleFields(module, resource)
-        .filter((field) =>
+        .filter(field =>
           this.isModuleFieldVisibleOnCurrentMode(module, field, resource)
         )
-        .map((field) => this.mapModuleFieldToDetail(field, resource))
+        .map(field => this.mapModuleFieldToDetail(field, resource))
     },
     /**
      * Get the fields that should be used in forms.
@@ -269,12 +265,12 @@ export default {
      * @param resource
      * @returns {(Object|CrudHead.$options|*)[]}
      */
-    getModuleFieldsUsedInForms(module, resource = {}) {
+    getModuleFieldsUsedInForms (module, resource = {}) {
       return this.getModuleFields(module, resource)
-        .filter((field) =>
+        .filter(field =>
           this.isModuleFieldVisibleOnCurrentMode(module, field, resource)
         )
-        .map((head) => this.mapModuleFieldToForm(head, resource))
+        .map(head => this.mapModuleFieldToForm(head, resource))
     },
     /**
      * Check if the current mode is in detail.
@@ -282,7 +278,7 @@ export default {
      * @param {String} module
      * @returns {boolean}
      */
-    isModuleInDetailMode(module) {
+    isModuleInDetailMode (module) {
       if (!this.getModulePrimaryKeyValue(module)) {
         return false
       }
@@ -297,7 +293,7 @@ export default {
      * @param {String} module
      * @returns {boolean}
      */
-    isModuleInUpdateMode(module) {
+    isModuleInUpdateMode (module) {
       return (
         !!this.getModulePrimaryKeyValue(module) &&
         this.getModuleDisplayMode() === this.DISPLAY_MODE_FORM
@@ -309,7 +305,7 @@ export default {
      * @param {String} module
      * @returns {boolean}
      */
-    isModuleInCreateMode(module) {
+    isModuleInCreateMode (module) {
       return (
         !this.isModuleInUpdateMode(module) &&
         this.getModuleDisplayMode() === this.DISPLAY_MODE_FORM
@@ -322,7 +318,7 @@ export default {
      * @param {String} module
      * @returns {boolean}
      */
-    isModuleInFormMode(module) {
+    isModuleInFormMode (module) {
       return (
         this.isModuleInCreateMode(module) || this.isModuleInUpdateMode(module)
       )
@@ -333,7 +329,7 @@ export default {
      * @param {String} module
      * @returns {boolean}
      */
-    isModuleInIndexMode(module) {
+    isModuleInIndexMode (module) {
       return this.getModuleDisplayMode() === this.DISPLAY_MODE_INDEX
     },
     /**
@@ -344,7 +340,7 @@ export default {
      * @param {Object} schema
      * @returns {Boolean}
      */
-    isModuleFieldVisibleWhenDependsOnOtherField(field, schema = {}) {
+    isModuleFieldVisibleWhenDependsOnOtherField (field, schema = {}) {
       if (!field.settings.visibility.when_field_name) {
         return true
       }
@@ -367,7 +363,7 @@ export default {
      * @param {Object} resource
      * @returns {boolean}
      */
-    isModuleFieldVisibleOnCurrentMode(module, field, resource = {}) {
+    isModuleFieldVisibleOnCurrentMode (module, field, resource = {}) {
       let visible = false
       switch (this.getModuleDisplayMode()) {
         case this.DISPLAY_MODE_FORM:
@@ -394,17 +390,18 @@ export default {
      * @params {String} module
      * @returns {string}
      */
-    getModulePrimaryKeyName(module) {
+    getModulePrimaryKeyName (module) {
       return (
         this.$crud.modules.find(({ name }) => name === module)?.primaryKey ||
         'id'
       )
     },
     /**
-     * This method allow you to get the name of the key used as parameter in the route.
+     * This method allow you to get the name of the key used as parameter in
+     * the route.
      * @returns {String}
      */
-    getModulePrimaryKeyParamName(module) {
+    getModulePrimaryKeyParamName (module) {
       if (this.$route.params[module]) {
         return this.$route.params[module]
       }
@@ -416,15 +413,18 @@ export default {
      * @param {String} module
      * @returns {String}
      */
-    getModulePrimaryKeyFromRoute(module) {
-      return this.$route.params[this.getModulePrimaryKeyParamName(module)] || ''
+    getModulePrimaryKeyFromRoute (module) {
+      return (
+        this.$route.params[this.getModulePrimaryKeyParamName(module)] || ''
+      )
     },
     /**
      * Get the vue-router route for detail page.
      * @param {String} module
-     * @returns {{query: {redirect: string}, name: string, params: {module: default.methods.module, id: String}}}
+     * @returns {{query: {redirect: string}, name: string, params: {module:
+     *   default.methods.module, id: String}}}
      */
-    getModuleRouteDetail(module) {
+    getModuleRouteDetail (module) {
       return {
         name: 'crud-module-detail',
         params: {
@@ -439,7 +439,7 @@ export default {
      * @param {String} module
      * @returns {String}
      */
-    getModulePrimaryKeyValue(module) {
+    getModulePrimaryKeyValue (module) {
       // Used in form /detail views
       const modulePrimaryKeyName = this.getModulePrimaryKeyName(module)
       if (this.value && this.value[modulePrimaryKeyName]) {
@@ -457,7 +457,7 @@ export default {
      * @param {String} module
      * @returns {string}
      */
-    getModuleApiUrl(module) {
+    getModuleApiUrl (module) {
       return `${this.$crud.api.prefix}${module}`
     },
     /**
@@ -465,7 +465,7 @@ export default {
      * @param {String} module
      * @returns {string}
      */
-    getModuleApiUrlCreate(module) {
+    getModuleApiUrlCreate (module) {
       return this.getModuleApiUrl(module)
     },
     /**
@@ -473,7 +473,7 @@ export default {
      * @param {String} module
      * @returns {String}
      */
-    getModuleApiUrlUpdate(module) {
+    getModuleApiUrlUpdate (module) {
       return [
         this.getModuleApiUrlCreate(module),
         this.getModulePrimaryKeyValue(module)
@@ -484,7 +484,7 @@ export default {
      * @param {String} module
      * @returns {String}
      */
-    getModuleApiUrlDestroy(module) {
+    getModuleApiUrlDestroy (module) {
       return this.getModuleApiUrlUpdate(module)
     },
     /**
@@ -492,7 +492,7 @@ export default {
      * @param {String} module
      * @returns {String}
      */
-    getModuleApiUrlShow(module) {
+    getModuleApiUrlShow (module) {
       return this.getModuleApiUrlUpdate(module)
     },
     /**
@@ -500,7 +500,7 @@ export default {
      * @param {Object} item
      * @returns {void}
      */
-    saved(item) {
+    saved (item) {
       this.$emit('save:success', item)
     },
     /**
@@ -510,7 +510,7 @@ export default {
      * @param {Object} item
      * @returns {void}
      */
-    destroyed(item) {
+    destroyed (item) {
       this.success(this.getTranslationForSuccessDestroy(this.module))
       this.$emit('destroy:success', item)
     },
@@ -519,7 +519,7 @@ export default {
      * @param {Object} item
      * @returns {void}
      */
-    updated(item) {
+    updated (item) {
       this.success(this.getTranslationForSuccessUpdate(this.module))
       this.$emit('input', item)
       this.$emit('update:success', item)
@@ -529,7 +529,7 @@ export default {
      * @param {Object} item
      * @returns {void}
      */
-    created(item) {
+    created (item) {
       this.success(this.getTranslationForSuccessCreate(this.module))
       this.$emit('input', item)
       this.$emit('create:success', item)
@@ -538,7 +538,7 @@ export default {
      * Responsible to notify when failed any operation.
      * @param {CrudResponse} response
      */
-    failed(response) {
+    failed (response) {
       this.error(
         this.getTranslation(response.message, 1, {
           resource: this.getTranslationForResourceSingular(this.module)
@@ -566,7 +566,7 @@ export default {
      * @param {CrudResponse} response
      * @returns {void}
      */
-    cancelled(response) {
+    cancelled (response) {
       if (response && response.reset) {
         response.reset()
       }
@@ -576,7 +576,7 @@ export default {
      * Responsible to notify when a given resource was found.
      * @param {CrudResponse} response
      */
-    found(response) {
+    found (response) {
       if (response && response.reset) {
         response.reset()
       }

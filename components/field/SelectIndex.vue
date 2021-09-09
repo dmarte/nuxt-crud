@@ -13,27 +13,27 @@ export default {
   props: {
     value: {
       type: [String, Object],
-      required: true,
+      required: true
     },
     items: {
       type: Array,
-      default: () => [],
-    },
+      default: () => []
+    }
   },
   computed: {
-    currentValue() {
+    currentValue () {
       const current = this.getFinalLabelFromItems(
         this.getFinalValue(this.value)
       )
 
       return this.getTranslation(current, 1, {}, current)
-    },
+    }
   },
   methods: {
-    getFinalValue(val) {
+    getFinalValue (val) {
       return isObject(val) ? val.value : val
     },
-    getFinalLabelFromItems(val) {
+    getFinalLabelFromItems (val) {
       const item = this.items.find((value) => {
         return value === val || value.value === val
       })
@@ -41,9 +41,7 @@ export default {
         return val
       }
       return item.text || item
-    },
-  },
+    }
+  }
 }
 </script>
-
-<style scoped></style>

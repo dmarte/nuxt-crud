@@ -12,7 +12,7 @@ export default class CrudModule {
    * @param {String} name
    * @param {Object} options
    */
-  constructor(name, options = {}) {
+  constructor (name, options = {}) {
     options.name = pluralize.plural(name.toLowerCase())
 
     this.$options = Object.assign(
@@ -25,7 +25,11 @@ export default class CrudModule {
         primaryKey: 'id',
         perPage: 30,
         routes: {
-          login: 'login',
+          login: 'login'
+        },
+        hooks: {
+          beforeCreate: undefined,
+          beforeUpdate: undefined
         },
         /**
          * @type {Array<CrudField>}
@@ -34,10 +38,30 @@ export default class CrudModule {
         /**
          * @type {Array<CrudAction>}
          */
-        actions: [],
+        actions: []
       },
       options
     )
+  }
+
+  /**
+   * Dispatch a vuex action before create.
+   * @param {String} vuexAction
+   * @returns {CrudModule}
+   */
+  dispatchBeforeCreate (vuexAction) {
+    this.$options.hooks.beforeCreate = vuexAction
+    return this
+  }
+
+  /**
+   * Dispatch an action before update.
+   * @param {String} vuexAction
+   * @returns {CrudModule}
+   */
+  dispatchBeforeUpdate (vuexAction) {
+    this.$options.hooks.beforeUpdate = vuexAction
+    return this
   }
 
   /**
@@ -46,7 +70,7 @@ export default class CrudModule {
    * @param {CrudAction} action
    * @returns {CrudModule}
    */
-  action(action) {
+  action (action) {
     action.module(this.$options.name)
     this.$options.actions.push(action)
     return this
@@ -56,7 +80,7 @@ export default class CrudModule {
    * Forms should be displayed as full-screen when modal box opens.
    * @returns {CrudModule}
    */
-  fullscreen() {
+  fullscreen () {
     this.$options.fullscreen = true
     return this
   }
@@ -66,7 +90,7 @@ export default class CrudModule {
    * @param {String} name
    * @returns {CrudModule}
    */
-  primaryKey(name) {
+  primaryKey (name) {
     this.$options.primaryKey = name
     return this
   }
@@ -77,9 +101,9 @@ export default class CrudModule {
    * @returns {CrudModule}
    * @throws Error
    */
-  field(field) {
+  field (field) {
     if (!field instanceof CrudField) {
-      throw new Error('The field should be an instance of CrudHead object.')
+      throw new TypeError('The field should be an instance of CrudHead object.')
     }
     field.dense(this.$options.dense)
     this.$options.head.push(field)
@@ -93,7 +117,7 @@ export default class CrudModule {
    * @param {String} name
    * @return {CrudModule}
    */
-  form(name) {
+  form (name) {
     this.$options.form = name
     return this
   }
@@ -105,7 +129,7 @@ export default class CrudModule {
    * @param {Boolean} enabled
    * @return {CrudModule}
    */
-  dense(enabled) {
+  dense (enabled) {
     this.$options.dense = enabled
     return this
   }
@@ -115,9 +139,9 @@ export default class CrudModule {
    *
    * @returns {Object}
    */
-  toObject() {
+  toObject () {
     const out = { ...this.$options }
-    out.head = out.head.map((v) => v.toObject())
+    out.head = out.head.map(v => v.toObject())
     out.actions = out.actions.map(v => v.toObject())
     return out
   }

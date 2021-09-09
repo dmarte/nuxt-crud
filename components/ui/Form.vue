@@ -7,11 +7,11 @@
       <v-card-text>
         <template v-for="(field, index) in fields">
           <c-ui-field-render
+            :key="`field_${index}`"
             :module="module"
             :display-mode="displayMode"
             :value="field.settings.value"
             :component="field.component"
-            :key="`field_${index}`"
             :name="field.name"
             :label="field.label"
             :placeholder="field.placeholder"
@@ -64,11 +64,11 @@ export default {
   props: {
     title: {
       type: String,
-      required: true,
+      required: true
     },
     response: {
       type: CrudResponse,
-      required: true,
+      required: true
     },
     displayMode: {
       type: String,
@@ -80,22 +80,22 @@ export default {
     },
     fields: {
       type: Array,
-      default: () => [],
+      default: () => []
     },
     busy: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   methods: {
-    mapItems(item) {
+    mapItems (item) {
       if (typeof item === 'string') {
         return item
       }
       item.text = this.$te(item.text) ? this.$t(item.text) : item.text || null
       return item
-    },
-  },
+    }
+  }
 }
 </script>
 

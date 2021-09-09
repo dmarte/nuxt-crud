@@ -1,28 +1,28 @@
+import _ from 'lodash'
 import CrudResponse from '../libs/CrudResponse'
 import module from './module'
 import messenger from './messenger'
-import _ from 'lodash'
 
 export default {
   mixins: [module, messenger],
   props: {
     module: {
       type: String,
-      required: true,
+      required: true
     },
     value: {
       type: [Object, String, Array, Number],
-      default: () => ({}),
-    },
+      default: () => ({})
+    }
   },
-  data() {
+  data () {
     return {
       response: new CrudResponse(),
       processing: false,
-      model: {},
+      model: {}
     }
   },
-  created() {
+  created () {
     this.reset()
   },
   methods: {
@@ -34,7 +34,7 @@ export default {
      * @param {Object} resource
      * @returns {Object}
      */
-    mapModuleFieldToForm(field, resource) {
+    mapModuleFieldToForm (field, resource) {
       field.settings.value = this.getModelPath(
         field.name,
         this.getModuleFieldDefaultValue(field)
@@ -47,7 +47,7 @@ export default {
      * @param {String|Array|Object|Number|undefined} defaults
      * @returns {Exclude<{}[never], undefined>}
      */
-    getModelPath(path, defaults = null) {
+    getModelPath (path, defaults = null) {
       return _.get(this.model, path, _.get(this.value, path, defaults))
     },
     /**
@@ -56,28 +56,32 @@ export default {
      * @param {String|Array|Object|Number|undefined} value
      * @returns {default.methods}
      */
-    setModelPath(path, value) {
+    setModelPath (path, value) {
       _.set(this.model, path, value)
       return this
     },
     /**
      * @returns {String|Number}
      */
-    getPrimaryKey() {
+    getPrimaryKey () {
       return this.getModulePrimaryKeyValue(this.module)
     },
     /**
      * Try to fetch de detail of a given resource.
      * @returns {Promise<any>}
      */
-    async show() {
+    async show () {
       return await this.$axios.$get(this.getModuleApiUrlShow(this.module))
     },
     /**
      * Try to create a new resource in the database.
      * @returns {Promise<any>}
      */
-    async store() {
+    async store () {
+      const hooks = this.getModuleSettings(this.module).hooks
+      if (hooks.beforeCreate) {
+        await this.$store.dispatch(hooks.beforeUpdate, this.model)
+      }
       return await this.$axios.$post(
         this.getModuleApiUrlCreate(this.module),
         this.model
@@ -87,7 +91,11 @@ export default {
      * Try to update the given resource in the API.
      * @returns {Promise<any>}
      */
-    async update() {
+    async update () {
+      const hooks = this.getModuleSettings(this.module).hooks
+      if (hooks.beforeUpdate) {
+        await this.$store.dispatch(hooks.beforeUpdate, this.model)
+      }
       return await this.$axios.$put(
         this.getModuleApiUrlUpdate(this.module),
         this.model
@@ -97,14 +105,14 @@ export default {
      * Try to destroy a given resource in the database.
      * @returns {Promise<any>}
      */
-    async destroy() {
+    async destroy () {
       return await this.$axios.$delete(this.getModuleApiUrlDestroy(this.modue))
     },
     /**
      * Hook to trigger when a given resource is destroyed.
      * @returns {Promise<void>}
      */
-    async whenDestroy() {
+    async whenDestroy () {
       this.response.reset()
       this.processing = true
       try {
@@ -122,7 +130,7 @@ export default {
      * Hook to trigger the create / update method when needed.
      * @returns {Promise<void>}
      */
-    async whenSave() {
+    async whenSave () {
       this.response.reset()
       this.processing = true
       try {
@@ -149,7 +157,7 @@ export default {
      * @param {CrudResponse} response
      * @returns {void}
      */
-    whenFailed(response) {
+    whenFailed (response) {
       this.failed(response)
     },
     /**
@@ -159,7 +167,7 @@ export default {
      * @param {CrudResponse} response
      * @returns {void}
      */
-    whenCancelled(response) {
+    whenCancelled (response) {
       this.cancelled(response)
       this.redirectIfNeeded()
     },
@@ -169,10 +177,10 @@ export default {
      *
      * @param {any} response
      */
-    whenFinded(response) {
+    whenFinded (response) {
       return this.found(response)
     },
-    redirectIfNeeded() {
+    redirectIfNeeded () {
       if (this.$route.query.redirect) {
         this.$router.push(this.$route.query.redirect)
       } else {
@@ -184,7 +192,7 @@ export default {
      *
      * @returns {Promise<void>}
      */
-    async find() {
+    async find () {
       this.response.reset()
       this.processing = true
       try {
@@ -202,7 +210,7 @@ export default {
      * Responsible to get the default schema to be used as model.
      * @returns {Object}
      */
-    schema() {
+    schema () {
       return this.getModuleResourceSchema(this.module, _.cloneDeep(this.value))
     },
     /**
@@ -210,10 +218,10 @@ export default {
      * the default state.
      * @returns {void}
      */
-    reset() {
+    reset () {
       this.model = this.schema()
       this.response.reset()
       this.processing = false
-    },
-  },
+    }
+  }
 }

@@ -2,7 +2,7 @@
   <component
     v-bind="$attrs"
     :is="block"
-    :response='response'
+    :response="response"
     :module="module"
     :value="value"
     v-on="$listeners"
@@ -24,23 +24,23 @@ export default {
     },
     displayMode: {
       type: String,
-      required: true,
+      required: true
     },
     module: {
       type: String,
-      required: true,
+      required: true
     },
     value: {
       type: [Array, Object, String, Number, Boolean],
-      default: null,
+      default: null
     },
     component: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   computed: {
-    block() {
+    block () {
       const allowed = ['CFieldHeading']
       if (allowed.includes(this.component)) {
         return this.component
@@ -50,7 +50,7 @@ export default {
       if (this.isModuleInFormMode(this.module)) {
         suffix = ''
       }
-      let component = `${this.component}${suffix}`
+      const component = `${this.component}${suffix}`
       // If no component registered
       // then render the generic
       if (component in Vue.options.components) {
@@ -58,7 +58,7 @@ export default {
       }
 
       return `CFieldText${this.DISPLAY_MODE_DETAIL}`
-    },
-  },
+    }
+  }
 }
 </script>

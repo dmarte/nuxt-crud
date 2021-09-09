@@ -3,53 +3,73 @@ export default {
   props: {
     value: {
       type: [String, Number, Boolean, Array, Object, Boolean],
-      default: null,
+      default: null
+    },
+    params: {
+      type: Object,
+      default: () => ({})
     },
     module: {
       type: String,
-      default: 'general',
+      default: 'general'
     },
     id: {
       type: String,
-      default() {
+      default () {
         return `text_field_id_${this._uid}`
-      },
+      }
     },
     name: {
       type: String,
-      default() {
+      default () {
         return `text_field_${this._uid}`
-      },
+      }
     },
     label: {
       type: String,
-      default: null,
+      default: null
+    },
+    min: {
+      type: [String, Number],
+      default: undefined
+    },
+    max: {
+      type: [String, Number],
+      default: undefined
+    },
+    hint: {
+      type: String,
+      default: null
+    },
+    readonly: {
+      type: Boolean,
+      default: false
     },
     placeholder: {
       type: String,
-      default: null,
+      default: null
     },
     disabled: {
       type: Boolean,
-      default: false,
+      default: false
     },
     response: {
       type: CrudResponse,
-      required: true,
-    },
+      required: true
+    }
   },
   computed: {
-    head() {
+    head () {
       return this.$attrs.params.head
     },
-    model() {
+    model () {
       return this.$attrs.params.model
-    },
+    }
   },
   methods: {
-    whenChange(value) {
+    whenChange (value) {
       this.response.forget(this.name)
       this.$emit('input', value)
-    },
-  },
+    }
+  }
 }
