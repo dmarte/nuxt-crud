@@ -209,7 +209,7 @@ export default {
       if (!action || !action.vuex.action) {
         return
       }
-      await this.$store.dispatch(action.vuex.action)
+      await this.$store.dispatch(action.vuex.action, this.value)
     }
   }
 }
