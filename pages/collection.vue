@@ -1,41 +1,67 @@
 <template>
   <c-ui-collection
-    :module="module"
+    :actions="getModuleActions(module)"
+    :busy="$fetchState.pending"
+    :dense="settings.dense"
+    :display-mode="DISPLAY_MODE_INDEX"
+    :filters="filters()"
     :form-fullscreen="settings.fullscreen"
-    :headers='columns()'
-    :actions='getModuleActions(module)'
-    :title='getModulePageTitle(module)'
-    :dense='settings.dense'
-    :display-mode='DISPLAY_MODE_INDEX'
-    :value='collection'
-    :busy='$fetchState.pending'
-    :response='response'
-    @refresh='$fetch'
-    @search='whenSearching'
-    @sort:desc='sortDesc'
-    @sort:by='sortBy'
+    :headers="columns()"
+    :module="module"
+    :paginator-current-page="meta.currentPage"
+    :paginator-from="meta.from"
+    :paginator-last-page="meta.lastPage"
+    :paginator-per-page="meta.perPage"
+    :paginator-to="meta.to"
+    :paginator-total="meta.total"
+    :per-page-preset="settings.perPage"
+    :response="response"
+    :title="getModulePageTitle(module)"
+    :value="collection"
+    disable-filtering
+    @destroy="wantsDestroy"
+    @filter="whenFilter"
+    @paginate="wantsPaginate"
+    @refresh="$fetch"
+    @search="whenSearching"
+    @per-page="wantsPerPage"
+    @sort:desc="sortDesc"
+    @sort:by="sortBy"
   />
 </template>
 
 <script>
 import CUiCollection from '../components/ui/Collection'
 import collection from '../mixins/pageCollection'
+
 export default {
   name: 'PageCrudCollection',
   components: { CUiCollection },
   mixins: [collection],
   props: {
-    module: { type: String, required: true },
+    module: {
+      type: String,
+      required: true
+    }
   },
-  async fetch() {
+  async fetch () {
     await this.collect()
   },
   computed: {
-    settings() {
+    settings () {
       return this.getModuleSettings(this.module)
+    }
+  },
+  methods: {
+    getQueryModel () {
+      const fields = this.getModuleFields(this.module)
+        .filter(field => field.settings.visibility.filter)
+      const out = {}
+      fields.forEach((field) => {
+        out[field.name] = this.$route.query[field.name] || undefined
+      })
+      return out
     }
   }
 }
 </script>
-
-<style scoped></style>

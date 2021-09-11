@@ -38,11 +38,13 @@ export default class CrudHead {
     this.$options = Object.assign(
       {
         settings: {
+          filter: false,
           visibility: {
             creating: true,
             updating: true,
             index: true,
             detail: true,
+            filter: false,
             when_field_name: null,
             when_field_value: null
           },

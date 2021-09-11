@@ -4,6 +4,7 @@ export default class CrudActionDelete extends CrudAction {
   constructor () {
     super()
     this
+      .name('destroy')
       .icon('mdi-delete-outline')
       .label('crud.actions.destroy')
       .emits('destroy')

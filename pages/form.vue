@@ -24,19 +24,19 @@ export default {
   props: {
     module: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
-  async fetch() {
+  async fetch () {
     if (this.isModuleInUpdateMode(this.module)) {
       await this.find()
     }
   },
   computed: {
-    displayMode() {
+    displayMode () {
       return this.DISPLAY_MODE_FORM
-    },
-  },
+    }
+  }
 }
 </script>
 

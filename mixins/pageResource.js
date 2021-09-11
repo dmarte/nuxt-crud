@@ -168,6 +168,7 @@ export default {
      * @returns {void}
      */
     whenCancelled (response) {
+      this.reset()
       this.cancelled(response)
       this.redirectIfNeeded()
     },
@@ -177,7 +178,7 @@ export default {
      *
      * @param {any} response
      */
-    whenFinded (response) {
+    whenFound (response) {
       return this.found(response)
     },
     redirectIfNeeded () {
@@ -197,7 +198,7 @@ export default {
       this.processing = true
       try {
         this.model = await this.show()
-        this.whenFinded(this.model)
+        this.whenFound(this.model)
       } catch (exception) {
         this.response.parse(exception)
         this.whenFailed(this.response)

@@ -138,8 +138,6 @@ export default {
         module: this.module
       }
 
-      action.route.params.id = this.primaryKey
-
       if (!has(action.route, 'query')) {
         action.route.query = {}
       }
@@ -167,6 +165,7 @@ export default {
         if (path === 'primaryKey') {
           out[this.getModulePrimaryKeyName(this.module)] =
             this.getModulePrimaryKeyValue(this.module)
+          out.id = this.getModulePrimaryKeyValue(this.module)
           continue
         }
 
@@ -206,10 +205,14 @@ export default {
      * @returns {void}
      */
     async dispatch (action) {
-      if (!action || !action.vuex.action) {
+      if (!action) {
+        this.$emit(action.name)
         return
       }
-      await this.$store.dispatch(action.vuex.action, this.value)
+      if (action.vuex.action) {
+        await this.$store.dispatch(action.vuex.action, this.value)
+      }
+      this.$emit(action.name, action)
     }
   }
 }

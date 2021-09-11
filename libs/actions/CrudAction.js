@@ -1,6 +1,7 @@
 export default class CrudAction {
   constructor () {
     this.$options = {
+      name: null,
       module: null,
       icon: null,
       label: null,
@@ -106,6 +107,17 @@ export default class CrudAction {
 
   confirmationTextSubmit (text) {
     this.$options.confirmation.textSubmit = text
+    return this
+  }
+
+  /**
+   * Set the name for the action.
+   *
+   * @param {String} actionName
+   * @returns {CrudAction}
+   */
+  name (actionName) {
+    this.$options.name = actionName
     return this
   }
 

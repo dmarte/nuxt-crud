@@ -4,6 +4,7 @@ import CrudActionDetail from './actions/CrudActionDetail'
 import CrudActionUpdate from './actions/CrudActionUpdate'
 import CrudActionIndex from './actions/CrudActionIndex'
 import CrudActionDelete from './actions/CrudActionDelete'
+
 /**
  * This class represent a base wrapper
  * to configure a module.
@@ -25,7 +26,7 @@ export default class CrudModule {
         width: 250, // Size of the form in modal
         form: undefined,
         primaryKey: 'id',
-        perPage: 30,
+        perPage: [10, 30, 50, 100, 150],
         routes: {
           login: 'login'
         },
@@ -34,6 +35,10 @@ export default class CrudModule {
           beforeCreate: undefined,
           beforeUpdate: undefined
         },
+        /**
+         * @type {Array<CrudField>}
+         */
+        filters: [],
         /**
          * @type {Array<CrudField>}
          */
@@ -124,6 +129,16 @@ export default class CrudModule {
     field.dense(this.$options.dense)
     this.$options.head.push(field)
     return this
+  }
+
+  /**
+   * Set the field as part of the filters.
+   *
+   * @param {CrudField} field
+   * @returns {CrudModule}
+   */
+  filter (field) {
+    return this.field(field.filterable())
   }
 
   /**

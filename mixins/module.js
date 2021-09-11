@@ -95,20 +95,21 @@ export default {
      * @returns {CrudField.$options}
      */
     mapModuleFieldToTranslations (module, field) {
-      field.label = this.getTranslationForFieldLabel(
+      const out = _.cloneDeep(field)
+      out.label = this.getTranslationForFieldLabel(
         module,
-        field.name,
-        field.label
+        out.name,
+        out.label
       )
-      field.placeholder = this.getTranslationForFieldPlaceholder(
+      out.placeholder = this.getTranslationForFieldPlaceholder(
         module,
-        field.placeholder
+        out.placeholder
       )
-      field.hint = this.getTranslationForFieldHint(module, field.hint)
-      if (field.settings.valuePath) {
-        field.settings.value = _.get(this, field.settings.valuePath, null)
+      out.hint = this.getTranslationForFieldHint(module, out.hint)
+      if (out.settings.valuePath) {
+        out.settings.value = _.get(this, out.settings.valuePath, null)
       }
-      return field
+      return out
     },
     /**
      * Transform the current field head to to Vuetify table head.
@@ -156,11 +157,11 @@ export default {
      */
     getModuleResourceSchema (module, resource) {
       const out = {}
-      this.getModuleFields(module).forEach((field) => {
-        const defaultValue = _.get(field, 'settings.value', null)
-        const resourceValue = _.get(resource, field.name, defaultValue)
-        _.set(out, field.name, resourceValue)
-      })
+      // this.getModuleFields(module).forEach((field) => {
+      //  const defaultValue = _.get(field, 'settings.value', null)
+      //  const resourceValue = _.get(resource, field.name, defaultValue)
+      //  _.set(out, field.name, resourceValue)
+      // })
       return out
     },
     /**

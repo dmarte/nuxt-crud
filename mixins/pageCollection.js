@@ -2,6 +2,7 @@ import _ from 'lodash'
 import CrudResponse from '../libs/CrudResponse'
 import module from './module'
 import translator from './translator'
+
 export default {
   mixins: [module, translator],
   props: {
@@ -19,7 +20,14 @@ export default {
       response: new CrudResponse(),
       fetching: false,
       searching: undefined,
-      meta: { total: 0, lastPage: 0 }
+      meta: {
+        currentPage: 0,
+        total: 0,
+        lastPage: 0,
+        perPage: 15,
+        from: 0,
+        to: 0
+      }
     }
   },
   watch: {
@@ -67,8 +75,8 @@ export default {
     getQueryPerPage () {
       return parseInt(
         this.$route.query.per_page ||
-          this.getModuleSettings(this.module).perPage ||
-          15
+        this.getModuleSettings(this.module).perPage[0] ||
+        15
       )
     },
     /**
@@ -86,7 +94,8 @@ export default {
         ...this.getQueryModel(),
         search: this.getQuerySearch(),
         sort_by: this.getQuerySortBy(),
-        sort_desc: this.getQuerySortDesc()
+        sort_desc: this.getQuerySortDesc(),
+        per_page: this.getQueryPerPage()
       }
     },
     /**
@@ -140,7 +149,10 @@ export default {
         clearTimeout(this.searching)
       }
       this.searching = setTimeout(
-        () => this.whenFilter({ search: text, current_page: 1 }),
+        () => this.whenFilter({
+          search: text,
+          current_page: 1
+        }),
         500
       )
     },
@@ -220,6 +232,45 @@ export default {
      * @param {any} item
      * @returns {void}
      */
+    async wantsDestroy (item) {
+      this.select(item)
+      this.fetching = true
+      try {
+        await this.$axios.$delete(this.getModuleApiUrlDestroy(this.module))
+        this.destroyed(item)
+      } catch (exception) {
+        this.response.parse(exception)
+        this.error(this.response.message)
+      } finally {
+        this.fetching = false
+      }
+    },
+    /**
+     * @param {Number} page
+     * @returns {Promise<void>}
+     */
+    async wantsPaginate (page) {
+      await this.whenFilter({
+        current_page: page
+      })
+    },
+    /**
+     * Redirect with a given per page.
+     *
+     * @param {Number} number
+     * @returns {Promise<void>}
+     */
+    async wantsPerPage (number) {
+      await this.whenFilter({
+        per_page: number
+      })
+    },
+    /**
+     * Trigger the form in update mode.
+     *
+     * @param {any} item
+     * @returns {void}
+     */
     wantsUpdate (item) {
       this.select(item)
       this.formOpened = true
@@ -256,6 +307,15 @@ export default {
         editing: false
       }
       return item
+    },
+    /**
+     * Get the list of fields that should be used for filtering.
+     * @returns {Array<CrudField.$options>}
+     */
+    filters () {
+      return this
+        .getModuleFields(this.module)
+        .filter(field => field.settings.visibility.filter)
     },
     /**
      * Generate all the columns that should be used in the collection.
@@ -332,8 +392,12 @@ export default {
             cancelToken: this.cancelToken.token
           }
         )
-        this.meta.total = response.meta.total || 0
-        this.meta.lastPage = response.meta.last_page || 0
+        this.meta.currentPage = this.getQueryCurrentPage()
+        this.meta.total = _.get(response, 'meta.total', 0)
+        this.meta.lastPage = _.get(response, 'meta.last_page', 1)
+        this.meta.perPage = this.getQueryPerPage()
+        this.meta.from = _.get(response, 'meta.from', 0)
+        this.meta.to = _.get(response, 'meta.to', 0)
         this.collection = response.data.map(this.merge)
       } catch (exception) {
         if (this.$axios.isCancel(exception)) {
