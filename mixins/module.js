@@ -550,6 +550,10 @@ export default {
           resource: this.getTranslationForResourceSingular(this.module)
         })
       )
+      if (response.isNotFound) {
+        this.$route.back()
+        return
+      }
       if (!response.isSessionExpired) {
         this.$emit('failed', response)
         return

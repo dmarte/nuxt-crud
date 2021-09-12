@@ -12,9 +12,6 @@
     :busy="$fetchState.pending"
     :response="response"
   >
-    <pre>
-      {{ model }}
-    </pre>
     <template #toolbar>
       <c-ui-actions-render
         :module="module"

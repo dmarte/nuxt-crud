@@ -20,11 +20,11 @@ export default {
   props: {
     items: {
       type: Array,
-      default: () => [],
-    },
+      default: () => []
+    }
   },
   computed: {
-    options() {
+    options () {
       return this.items.map((option) => {
         if (typeof option === 'string') {
           return {
@@ -35,9 +35,7 @@ export default {
 
         return option
       })
-    },
-  },
+    }
+  }
 }
 </script>
-
-<style scoped></style>

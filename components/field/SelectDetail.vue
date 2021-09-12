@@ -5,17 +5,17 @@
     </v-list-item-subtitle>
     <v-list-item-title>
       <slot>
-        {{ value }}
+        {{ currentValue }}
       </slot>
     </v-list-item-title>
   </v-list-item>
 </template>
 
 <script>
-import field from '../../mixins/field'
+import select from '../../mixins/select'
 export default {
   name: 'CFieldSelectDetail',
-  mixins: [field]
+  mixins: [select]
 }
 </script>
 
