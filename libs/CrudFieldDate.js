@@ -18,6 +18,10 @@ export default class CrudFieldDate extends CrudField {
     return this
   }
 
+  valueFromCurrentDate () {
+    return this.valueDynamic('currentDate')
+  }
+
   useNextYearAsMinDate () {
     return this.min('date:next_year')
   }

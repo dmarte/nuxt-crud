@@ -4,16 +4,6 @@ import field from './field'
 
 export default {
   mixins: [translator, field],
-  props: {
-    value: {
-      type: [String, Object],
-      required: true
-    },
-    items: {
-      type: Array,
-      default: () => []
-    }
-  },
   computed: {
     currentValue () {
       const current = this.getFinalLabelFromItems(
@@ -21,6 +11,22 @@ export default {
       )
 
       return this.getTranslation(current, 1, {}, current)
+    },
+    options () {
+      return this.items.map((option) => {
+        if (typeof option === 'string') {
+          return {
+            value: option,
+            text: this.getTranslation(option, 1, {}, option)
+          }
+        }
+
+        if (option.text) {
+          option.text = this.getTranslation(option.text, 1, {}, option.text)
+        }
+
+        return option
+      })
     }
   },
   methods: {

@@ -19,6 +19,16 @@
         </v-icon>
         {{ $t('crud.title.filter') }}
       </v-btn>
+      <v-btn
+        v-if="hasFilters"
+        color="warning"
+        type="button"
+        elevation="0"
+        small
+        @click="$emit('filter-reset', {})"
+      >
+        {{ $t('crud.message.clean_filters') }}
+      </v-btn>
     </template>
     <v-list dense>
       <v-list-item>
@@ -53,11 +63,13 @@
               :ref="`field_${index}`"
               :value="getFieldValue(field)"
               :items="field.settings.items"
+              :params="field.settings.params"
               :component="field.component"
               :display-mode="DISPLAY_MODE_FORM"
               :module="module"
               :response="response"
               @change="v => setFieldValue(field, v)"
+              @keypress.enter="onFilter"
             />
           </v-list-item-content>
         </v-list-item>
@@ -124,6 +136,11 @@ export default {
   data () {
     return {
       filters: {}
+    }
+  },
+  computed: {
+    hasFilters () {
+      return this.fields.some(({ name }) => this.$route.query[name])
     }
   },
   methods: {

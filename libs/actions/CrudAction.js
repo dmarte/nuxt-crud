@@ -13,6 +13,7 @@ export default class CrudAction {
       query: {},
       confirmation: {
         enabled: false,
+        loading: false,
         color: 'primary',
         textTitle: 'crud.title.confirm',
         textBody: null,

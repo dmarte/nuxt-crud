@@ -39,6 +39,7 @@
         <v-btn
           :small="dense"
           :title="action.label"
+          :disabled="action.confirmation.loading"
           type="button"
           text
           @click.prevent="$refs.modal.save()"
@@ -49,6 +50,7 @@
           :small="dense"
           :title="action.label"
           :color="action.confirmation.color"
+          :loading="action.confirmation.loading"
           :to="to"
           type="button"
           elevation="0"

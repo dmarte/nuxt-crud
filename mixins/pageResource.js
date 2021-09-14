@@ -80,7 +80,7 @@ export default {
     async store () {
       const hooks = this.getModuleSettings(this.module).hooks
       if (hooks.beforeCreate) {
-        await this.$store.dispatch(hooks.beforeUpdate, this.model)
+        await this.$store.dispatch(hooks.beforeCreate, this.model)
       }
       return await this.$axios.$post(
         this.getModuleApiUrlCreate(this.module),
@@ -106,7 +106,7 @@ export default {
      * @returns {Promise<any>}
      */
     async destroy () {
-      return await this.$axios.$delete(this.getModuleApiUrlDestroy(this.modue))
+      return await this.$axios.$delete(this.getModuleApiUrlDestroy(this.module))
     },
     /**
      * Hook to trigger when a given resource is destroyed.

@@ -134,8 +134,20 @@ export default {
         name: this.$route.name,
         params: this.$route.params,
         query: {
+          ...this.getQueryModel(),
           ...this.getQueryString(),
           ...filters
+        }
+      })
+    },
+    async whenFilterReset () {
+      await this.$router.push({
+        name: this.$route.name,
+        params: this.$route.params,
+        query: {
+          sort_by: this.getQuerySortBy(),
+          sort_desc: this.getQuerySortDesc(),
+          per_page: this.getQueryPerPage()
         }
       })
     },
@@ -237,6 +249,7 @@ export default {
       this.fetching = true
       try {
         await this.$axios.$delete(this.getModuleApiUrlDestroy(this.module))
+        this.whenDestroyed(item)
         this.destroyed(item)
       } catch (exception) {
         this.response.parse(exception)
@@ -353,6 +366,9 @@ export default {
     params () {
       return {}
     },
+    hasParams () {
+      return Object.keys(this.params()).length > 0
+    },
     /**
      * Sort the results by a given column.
      *
@@ -396,8 +412,8 @@ export default {
         this.meta.total = _.get(response, 'meta.total', 0)
         this.meta.lastPage = _.get(response, 'meta.last_page', 1)
         this.meta.perPage = this.getQueryPerPage()
-        this.meta.from = _.get(response, 'meta.from', 0)
-        this.meta.to = _.get(response, 'meta.to', 0)
+        this.meta.from = response.meta.from ? _.get(response, 'meta.from', 0) : 0
+        this.meta.to = response.meta.to ? _.get(response, 'meta.to', 0) : 0
         this.collection = response.data.map(this.merge)
       } catch (exception) {
         if (this.$axios.isCancel(exception)) {

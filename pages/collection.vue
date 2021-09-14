@@ -19,8 +19,9 @@
     :title="getModulePageTitle(module)"
     :value="collection"
     disable-filtering
-    @destroy="wantsDestroy"
+    @destroy="destroy"
     @filter="whenFilter"
+    @filter-reset="whenFilterReset"
     @paginate="wantsPaginate"
     @refresh="$fetch"
     @search="whenSearching"
@@ -53,6 +54,11 @@ export default {
     }
   },
   methods: {
+    async destroy (payload) {
+      payload.action.confirmation.loading = true
+      await this.wantsDestroy(payload.item)
+      payload.action.confirmation.loading = false
+    },
     getQueryModel () {
       const fields = this.getModuleFields(this.module)
         .filter(field => field.settings.visibility.filter)

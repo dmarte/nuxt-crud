@@ -69,6 +69,9 @@ export default {
         _.get(resource, field.name, null)
       )
       return field
+    },
+    afterDestroy () {
+      this.$router.push({ name: 'crud-module-collection', params: { module: this.$route.params.module } })
     }
   }
 }

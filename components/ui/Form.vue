@@ -26,7 +26,7 @@
             :clearable="field.settings.clearable"
             :dense="field.settings.dense"
             :readonly="field.settings.readonly"
-            :items="field.settings.items.map(mapItems)"
+            :items="field.settings.items"
             :response="response"
             :disabled="!field.enabled || busy"
             @input="

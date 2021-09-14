@@ -206,13 +206,13 @@ export default {
      */
     async dispatch (action) {
       if (!action) {
-        this.$emit(action.name)
         return
       }
+      action.confirmation.enabled = false
       if (action.vuex.action) {
         await this.$store.dispatch(action.vuex.action, this.value)
       }
-      this.$emit(action.name, action)
+      this.$emit(action.name, { action, item: this.value })
     }
   }
 }

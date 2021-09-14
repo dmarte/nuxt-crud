@@ -83,7 +83,7 @@
               :display-mode="displayMode"
               :module="module"
               :value="item"
-              @destroy="$emit('destroy', item)"
+              @destroy="payload => $emit('destroy', payload)"
             />
           </template>
           <template #top>
@@ -99,6 +99,7 @@
                   :value="{ per_page: paginatorPerPage }"
                   @per-page="(page) => $emit('per-page',page)"
                   @change="(v) => $emit('filter', v)"
+                  @filter-reset="$emit('filter-reset', {})"
                 />
               </v-col>
               <v-col class="text-right">
@@ -107,7 +108,7 @@
                   class="px-2 py-2"
                 >
                   {{
-                    $tc(`crud.title.pagination`, paginatorTotal > 1 ? 2 : 1, {
+                    $tc(`crud.title.pagination`, paginatorTotal, {
                       from: paginatorFrom,
                       to: paginatorTo,
                       total: paginatorTotal

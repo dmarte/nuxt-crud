@@ -26,6 +26,9 @@ export default {
      */
     DISPLAY_MODE_DETAIL () {
       return CrudHead.DISPLAY_MODE_DETAIL
+    },
+    currentDate () {
+      return this.$moment().format('YYYY-MM-DD')
     }
   },
   methods: {
@@ -96,11 +99,11 @@ export default {
      */
     mapModuleFieldToTranslations (module, field) {
       const out = _.cloneDeep(field)
-      out.label = this.getTranslationForFieldLabel(
+      out.label = this.getTranslation(out.label, 1, {}, this.getTranslationForFieldLabel(
         module,
-        out.name,
-        out.label
-      )
+        out.label,
+        out.name
+      ))
       out.placeholder = this.getTranslationForFieldPlaceholder(
         module,
         out.placeholder
@@ -157,11 +160,11 @@ export default {
      */
     getModuleResourceSchema (module, resource) {
       const out = {}
-      // this.getModuleFields(module).forEach((field) => {
-      //  const defaultValue = _.get(field, 'settings.value', null)
-      //  const resourceValue = _.get(resource, field.name, defaultValue)
-      //  _.set(out, field.name, resourceValue)
-      // })
+      this.getModuleFields(module).forEach((field) => {
+        const defaultValue = _.get(field, 'settings.value', null)
+        const resourceValue = _.get(resource, field.name, defaultValue)
+        _.set(out, field.name, resourceValue)
+      })
       return out
     },
     /**
@@ -174,6 +177,9 @@ export default {
       return this.getModuleFields(module).find(
         field => field.name === fieldName
       )
+    },
+    getModuleIndex (module) {
+      return this.$crud.modules.findIndex(mod => mod === module)
     },
     /**
      * Get the default value assigned to a given field.
@@ -501,6 +507,9 @@ export default {
     getModuleApiUrlShow (module) {
       return this.getModuleApiUrlUpdate(module)
     },
+    afterDestroy (item) {},
+    afterCreate (item) {},
+    afterUpdate (item) {},
     /**
      * Trigger when the element is saved.
      * @param {Object} item
@@ -517,6 +526,7 @@ export default {
      * @returns {void}
      */
     destroyed (item) {
+      this.afterDestroy(item)
       this.success(this.getTranslationForSuccessDestroy(this.module))
       this.$emit('destroy:success', item)
     },
@@ -526,6 +536,7 @@ export default {
      * @returns {void}
      */
     updated (item) {
+      this.afterUpdate(item)
       this.success(this.getTranslationForSuccessUpdate(this.module))
       this.$emit('input', item)
       this.$emit('update:success', item)
@@ -536,6 +547,7 @@ export default {
      * @returns {void}
      */
     created (item) {
+      this.afterCreate(item)
       this.success(this.getTranslationForSuccessCreate(this.module))
       this.$emit('input', item)
       this.$emit('create:success', item)
@@ -551,7 +563,7 @@ export default {
         })
       )
       if (response.isNotFound) {
-        this.$route.back()
+        this.$router.back()
         return
       }
       if (!response.isSessionExpired) {

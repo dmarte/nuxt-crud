@@ -3,11 +3,11 @@
     :id="id"
     v-bind="$attrs"
     :disabled="disabled"
-    :loading="searching"
     :error-messages="response.feedback(name)"
     :hint="hint"
-    :items="items"
+    :items="items.length > 0 ? items : options"
     :label="label"
+    :loading="searching"
     :placeholder="placeholder"
     :search-input.sync="query"
     :value="value"
@@ -49,11 +49,8 @@ export default {
       query: null,
       searching: false,
       token: this.$axios.CancelToken.source(),
-      items: []
+      options: []
     }
-  },
-  async fetch () {
-
   },
   watch: {
     query (value) {
@@ -67,10 +64,6 @@ export default {
   },
   mounted () {
     if (this.value) {
-      this.$fetch(this.value)
-    }
-
-    if (!this.value) {
       this.onSearch(this.value)
     }
   },
@@ -98,7 +91,7 @@ export default {
           data = _.get(data, this.params.wrap, [])
         }
 
-        this.items = data.map(item => ({
+        this.options = data.map(item => ({
           value: _.get(item, this.params.value, null),
           text: _.get(item, this.params.text, null)
         }))
