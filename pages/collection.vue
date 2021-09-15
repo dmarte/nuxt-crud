@@ -32,9 +32,9 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import CUiCollection from '../components/ui/Collection'
 import collection from '../mixins/pageCollection'
-
 export default {
   name: 'PageCrudCollection',
   components: { CUiCollection },
@@ -64,7 +64,7 @@ export default {
         .filter(field => field.settings.visibility.filter)
       const out = {}
       fields.forEach((field) => {
-        out[field.name] = this.$route.query[field.name] || undefined
+        _.set(out, field.name, this.$route.query[field.name] || field.value || field.settings.value || undefined)
       })
       return out
     }

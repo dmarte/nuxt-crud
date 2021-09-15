@@ -10,6 +10,8 @@
     <template #activator="{ on, attrs }">
       <v-btn
         color="primary"
+        class="my-2 mx-1"
+        ripple
         text
         v-bind="attrs"
         v-on="on"
@@ -25,6 +27,7 @@
         type="button"
         elevation="0"
         small
+        outlined
         @click="$emit('filter-reset', {})"
       >
         {{ $t('crud.message.clean_filters') }}
@@ -98,6 +101,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import module from '../../mixins/module'
 import CrudResponse from '../../libs/CrudResponse'
 import CUiFieldRender from './FieldRender'
@@ -140,14 +144,16 @@ export default {
   },
   computed: {
     hasFilters () {
-      return this.fields.some(({ name }) => this.$route.query[name])
+      return this.fields.some(({ name }) => _.has(this.$route.query, name))
     }
   },
   methods: {
     onFilter () {
       this.$refs.filter.save()
       const out = {}
-      this.fields.filter(field => field.value).forEach((field) => { out[field.name] = field.value })
+      this.fields.forEach((field) => {
+        _.set(out, field.name, field.value || field.settings.value)
+      })
       this.$emit('change', out)
     },
     getFieldValue (field) {
