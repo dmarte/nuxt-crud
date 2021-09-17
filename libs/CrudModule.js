@@ -1,4 +1,5 @@
 import CrudField from './CrudField'
+import CrudAction from './actions/CrudAction'
 import CrudActionCreate from './actions/CrudActionCreate'
 import CrudActionDetail from './actions/CrudActionDetail'
 import CrudActionUpdate from './actions/CrudActionUpdate'
@@ -21,11 +22,13 @@ export default class CrudModule {
     this.$options = Object.assign(
       {
         name,
+        parent: null,
         dense: false,
         fullscreen: false,
         width: 250, // Size of the form in modal
         form: undefined,
         primaryKey: 'id',
+        resourceWrapper: '',
         perPage: [10, 30, 50, 100, 150],
         routes: {
           login: 'login'
@@ -57,11 +60,58 @@ export default class CrudModule {
    * @returns {CrudModule}
    */
   withDefaultActions () {
-    this.action(new CrudActionIndex())
-    this.action(new CrudActionCreate())
-    this.action(new CrudActionDetail())
-    this.action(new CrudActionUpdate())
-    this.action(new CrudActionDelete())
+    return this.withActionCreate()
+  }
+
+  /**
+   * Enable the action to create a new resource.
+   *
+   * @returns {CrudModule}
+   */
+  withActionCreate() {
+    const action = new CrudAction()
+    action
+      .name('create')
+      .label('crud.actions.create')
+      .icon('mdi-plus')
+      .emits('create')
+      .standalone()
+
+    if (this.$options.parent) {
+      action
+        .route({ name: 'crud-resource-child-create' })
+        .setParamFromComponent('parentResource', 'parent')
+        .setParamFromComponent('parentResourceId', 'parent_id')
+        .setParamFromComponent('resource', 'resource')
+        .setQueryFromRoute('fullPath', 'redirect')
+    } else {
+      action
+        .route({ name: 'crud-resource-create' })
+        .setParamFromComponent('resource', 'resource')
+        .setQueryFromRoute('fullPath', 'redirect')
+    }
+
+    return this.action(action)
+  }
+
+  /**
+   * Set a module that should be parent.
+   *
+   * @param {String} parentModuleName
+   * @returns {CrudModule}
+   */
+  parent(parentModuleName) {
+    this.$options.parent = parentModuleName
+   return this
+  }
+
+  /**
+   * Common path must be used when fetching a single resource.
+   * @param {String} path
+   * @returns {CrudModule}
+   */
+  wrapper(path) {
+    this.$options.resourceWrapper = path
     return this
   }
 
@@ -92,19 +142,13 @@ export default class CrudModule {
    * @returns {CrudModule}
    */
   action (action) {
-    action.module(this.$options.name)
+    action.$options.module = this.$options.name
+    action.$options.parent = this.$options.parent
     this.$options.actions.push(action)
     return this
   }
 
-  /**
-   * Forms should be displayed as full-screen when modal box opens.
-   * @returns {CrudModule}
-   */
-  fullscreen () {
-    this.$options.fullscreen = true
-    return this
-  }
+
 
   /**
    * Set the primary key for the.

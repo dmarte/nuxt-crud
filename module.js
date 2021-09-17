@@ -26,45 +26,78 @@ export default function (options) {
     },
   })
   this.extendRoutes((routes, resolve) => {
+
     routes.push({
-      path: '/c/:module',
-      component: resolve(__dirname, 'pages/index'),
+      path: '/c/:resource',
+      name: 'crud-resource-index',
+      component: resolve(__dirname, 'pages/resource/index'),
       props: {
-        module: (route) => route.params.module,
-      },
-      children: [
-        {
-          path: '',
-          name: 'crud-module-collection',
-          component: resolve(__dirname, 'pages/collection'),
-        },
-        {
-          path: 'create',
-          name: 'crud-module-create',
-          component: resolve(__dirname, 'pages/form'),
-        },
-        {
-          path: ':id',
-          name: 'crud-module-detail',
-          component: resolve(__dirname, 'pages/detail'),
-        },
-        {
-          path: ':id/update',
-          name: 'crud-module-update',
-          component: resolve(__dirname, 'pages/form'),
-          props: {
-            id: (route) => route.params.id,
-          }
-        },
-      ],
+        mode: 'index',
+        resource: route => route.params.resource,
+        resourceId: null
+      }
     })
+
+    routes.push({
+      path: '/c/:resource/create',
+      name: 'crud-resource-create',
+      component: resolve(__dirname, 'pages/resource/form'),
+      props: {
+        mode: 'create',
+        resource: route => route.params.resource,
+        resourceId: null
+      }
+    })
+
+    // routes.push({
+    //   path: '/c/:parent/:parent_id/:resource',
+    //   name: 'crud-resource-child-index',
+    //   component: resolve(__dirname, 'pages/child/index'),
+    //   props: {
+    //     mode: 'index',
+    //   }
+    // })
+    //
+    // routes.push({
+    //   path: '/c/:parent/:parent_id/:resource/create',
+    //   name: 'crud-resource-child-create',
+    //   component: resolve(__dirname, 'pages/child/form'),
+    //   props: {
+    //     mode: 'create',
+    //   }
+    // })
+    //
+    // routes.push({
+    //   path: '/c/:parent/:parent_id/:resource/:resource_id',
+    //   name: 'crud-resource-child-detail',
+    //   component: resolve(__dirname, 'pages/child/detail'),
+    //   props: {
+    //     mode: 'detail',
+    //     parentResource: route => route.params.parent,
+    //     parentResourceId: route => route.params.parent_id,
+    //     resource: route => route.params.resource,
+    //     resourceId: route => route.params.resource_id
+    //   }
+    // })
+    //
+    // routes.push({
+    //   path: '/c/:parent/:parent_id/:resource/:resource_id/update',
+    //   name: 'crud-resource-child-update',
+    //   component: resolve(__dirname, 'pages/child/form'),
+    //   props: {
+    //     mode: 'update'
+    //   }
+    // })
+
   })
 
   // Register components
   this.nuxt.hook('components:dirs', (dirs) => {
     dirs.push({
-      path: join(__dirname, 'components'),
-      prefix: 'c',
+      path: join(__dirname, 'components/fields')
+    })
+    dirs.push({
+      path: join(__dirname, 'components/ui')
     })
   })
 }

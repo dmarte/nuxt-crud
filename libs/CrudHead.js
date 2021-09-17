@@ -3,8 +3,8 @@ export default class CrudHead {
    * @param {{
         settings: {
           visibility: {
-            creating: <Boolean>,
-            updating: <Boolean>,
+            create: <Boolean>,
+            update: <Boolean>,
             index: <Boolean>,
             detail: <Boolean>,
             when_field_name: <String?>,
@@ -40,8 +40,8 @@ export default class CrudHead {
         settings: {
           filter: false,
           visibility: {
-            creating: true,
-            updating: true,
+            create: true,
+            update: true,
             index: true,
             detail: true,
             filter: false,
@@ -141,25 +141,25 @@ export default class CrudHead {
   }
 
   /**
-   * Hides a given field when creating.
+   * Hides a given field when create.
    * @returns {CrudHead|CrudField}
    */
   hideWhenCreating () {
-    this.$options.settings.visibility.creating = false
+    this.$options.settings.visibility.create = false
     return this
   }
 
   /**
-   * Hides a given head when updating.
+   * Hides a given head when update.
    * @returns {CrudHead|CrudField}
    */
   hideWhenUpdating () {
-    this.$options.settings.visibility.updating = false
+    this.$options.settings.visibility.update = false
     return this
   }
 
   /**
-   * Hides a given head when updating.
+   * Hides a given head when update.
    * @returns {CrudHead|CrudField}
    */
   hideOnDetail () {
@@ -182,32 +182,32 @@ export default class CrudHead {
    */
   onlyOnForms () {
     this.hideOnIndex().hideOnDetail()
-    this.$options.settings.visibility.creating = true
-    this.$options.settings.visibility.updating = true
+    this.$options.settings.visibility.create = true
+    this.$options.settings.visibility.update = true
     return this
   }
 
   /**
-   * Show only when creating.
+   * Show only when create.
    * @returns {CrudHead|CrudField}
    */
   onlyWhenCreating () {
     this.hideOnIndex()
       .hideOnDetail()
       .hideWhenUpdating()
-    this.$options.settings.visibility.creating = true
+    this.$options.settings.visibility.create = true
     return this
   }
 
   /**
-   * Show only when creating.
+   * Show only when create.
    * @returns {CrudHead|CrudField}
    */
   onlyWhenUpdating () {
     this.hideOnIndex()
       .hideOnDetail()
       .hideWhenCreating()
-    this.$options.settings.visibility.updating = true
+    this.$options.settings.visibility.update = true
     return this
   }
 
@@ -349,6 +349,24 @@ export default class CrudHead {
   valueFromVuexState (statePath) {
     this.valueDynamic(`$store.state.${statePath}`)
     return this
+  }
+
+  /**
+   * Set the value from resource parent ID when available.
+   *
+   * @returns {CrudHead}
+   */
+  valueFromResourceParent() {
+    return this.valueDynamic('parentResourceId')
+  }
+
+  /**
+   * Set the value from resource ID (when available).
+   *
+   * @returns {CrudHead}
+   */
+  valueFromResource() {
+    return this.valueDynamic('resourceId')
   }
 
   /**
