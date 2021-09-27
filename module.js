@@ -6,9 +6,9 @@ export default function (options) {
   const settings = Object.assign(
     {
       api: {
-        prefix: '/api/',
+        prefix: '/api/'
       },
-      modules: [],
+      modules: []
     },
     this.options.crud || {},
     options
@@ -17,54 +17,67 @@ export default function (options) {
   this.addPlugin({
     src: resolve(__dirname, 'plugin.js'),
     options: {
-      modules: settings.modules.map((module) => module.toObject()),
+      modules: settings.modules.map(module => module.toObject()),
       api: settings.api,
       store: {
         messenger,
-        breadcrumbs,
-      },
-    },
+        breadcrumbs
+      }
+    }
   })
   this.extendRoutes((routes, resolve) => {
     routes.push({
-      path: '/c/:module',
-      component: resolve(__dirname, 'pages/index'),
+      path: '/c/:resource',
+      name: 'crud-resource-index',
+      component: resolve(__dirname, 'pages/resource/index'),
       props: {
-        module: (route) => route.params.module,
-      },
-      children: [
-        {
-          path: '',
-          name: 'crud-module-collection',
-          component: resolve(__dirname, 'pages/collection'),
-        },
-        {
-          path: 'create',
-          name: 'crud-module-create',
-          component: resolve(__dirname, 'pages/form'),
-        },
-        {
-          path: ':id',
-          name: 'crud-module-detail',
-          component: resolve(__dirname, 'pages/detail'),
-        },
-        {
-          path: ':id/update',
-          name: 'crud-module-update',
-          component: resolve(__dirname, 'pages/form'),
-          props: {
-            id: (route) => route.params.id,
-          }
-        },
-      ],
+        mode: 'index',
+        resource: route => route.params.resource,
+        resourceId: null
+      }
+    })
+
+    routes.push({
+      path: '/c/:resource/create',
+      name: 'crud-resource-create',
+      component: resolve(__dirname, 'pages/resource/form'),
+      props: {
+        mode: 'create',
+        resource: route => route.params.resource,
+        resourceId: null
+      }
+    })
+
+    routes.push({
+      path: '/c/:resource/:resourceId',
+      name: 'crud-resource-detail',
+      component: resolve(__dirname, 'pages/resource/detail'),
+      props: {
+        mode: 'detail',
+        resource: route => route.params.resource,
+        resourceId: route => route.params.resourceId
+      }
+    })
+
+    routes.push({
+      path: '/c/:resource/:resourceId/update',
+      name: 'crud-resource-update',
+      component: resolve(__dirname, 'pages/resource/form'),
+      props: {
+        mode: 'update',
+        resource: route => route.params.resource,
+        resourceId: route => route.params.resourceId
+      }
     })
   })
 
   // Register components
   this.nuxt.hook('components:dirs', (dirs) => {
     dirs.push({
-      path: join(__dirname, 'components'),
-      prefix: 'c',
+      path: join(__dirname, 'components/fields')
+    })
+    dirs.push({
+      path: join(__dirname, 'components/ui')
     })
   })
 }

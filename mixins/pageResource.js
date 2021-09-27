@@ -35,11 +35,17 @@ export default {
      * @returns {Object}
      */
     mapModuleFieldToForm (field, resource) {
-      field.settings.value = this.getModelPath(
-        field.name,
+      const wrapper = this.getModuleSettings(this.module).resourceWrapper
+      const name = wrapper ? `${wrapper}.${field.name}` : field.name
+
+      field.value = this.getModelPath(
+        name,
         this.getModuleFieldDefaultValue(field)
       )
       return field
+    },
+    mapModuleFieldToDetail (field, resource) {
+      return this.mapModuleFieldToForm(field, resource)
     },
     /**
      * Get a value from model or form value path.

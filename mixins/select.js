@@ -1,15 +1,19 @@
 import { isObject } from 'lodash'
 import translator from './translator'
-import field from './field'
 
 export default {
-  mixins: [translator, field],
+  mixins: [translator],
+  props: {
+    items: {
+      type: Array,
+      default: () => []
+    }
+  },
   computed: {
     currentValue () {
       const current = this.getFinalLabelFromItems(
         this.getFinalValue(this.value)
       )
-
       return this.getTranslation(current, 1, {}, current)
     },
     options () {

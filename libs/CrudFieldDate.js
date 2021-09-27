@@ -5,6 +5,7 @@ export default class CrudFieldDate extends CrudField {
     super(fieldName, 'CFieldDate')
     this.displayFormat('D MMM YYYY')
     this.storeFormat('YYYY-MM-DD')
+    this.initialDisplayModeDate()
   }
 
   /**
@@ -19,7 +20,27 @@ export default class CrudFieldDate extends CrudField {
   }
 
   valueFromCurrentDate () {
-    return this.valueDynamic('currentDate')
+    return this.valueDynamic('getCurrentDate')
+  }
+
+  initialDisplayMode (type) {
+    this.$options.settings.params.display = type
+    return this
+  }
+
+  initialDisplayModeYear () {
+    this.initialDisplayMode('YEAR')
+    return this
+  }
+
+  initialDisplayModeMonth () {
+    this.initialDisplayMode('MONTH')
+    return this
+  }
+
+  initialDisplayModeDate () {
+    this.initialDisplayMode('DATE')
+    return this
   }
 
   useNextYearAsMinDate () {

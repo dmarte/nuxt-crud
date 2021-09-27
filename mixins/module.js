@@ -470,7 +470,9 @@ export default {
      * @returns {string}
      */
     getModuleApiUrl (module) {
-      return `${this.$crud.api.prefix}${module}`
+      const settings = this.getModuleSettings(module)
+      const path = settings.parent ? `${settings.parent}/:parent/${settings.name}` : settings.name
+      return `${this.$crud.api.prefix}${path}`
     },
     /**
      * Generate the URL to create new resources.

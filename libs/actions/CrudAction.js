@@ -2,7 +2,8 @@ export default class CrudAction {
   constructor () {
     this.$options = {
       name: null,
-      module: null,
+      module: null, // Main module in use
+      parent: null, // Module parent
       icon: null,
       label: null,
       route: undefined,
@@ -30,7 +31,6 @@ export default class CrudAction {
         action: undefined
       }
     }
-    this.setParamFromRoute('params.module', 'module')
   }
 
   dynamicParam (prefix, path, name) {
@@ -119,16 +119,6 @@ export default class CrudAction {
    */
   name (actionName) {
     this.$options.name = actionName
-    return this
-  }
-
-  /**
-   * Set the module name where this action should be used.
-   * @param {String} name
-   * @returns {CrudAction}
-   */
-  module (name) {
-    this.$options.module = name
     return this
   }
 

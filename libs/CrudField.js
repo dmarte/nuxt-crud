@@ -22,6 +22,7 @@ export default class CrudField extends CrudHead {
    * @returns {CrudHead}
    */
   onlyOnFilters () {
+    this.$options.settings.filter = true
     return this.hideOnIndex().hideOnForms().hideOnDetail().filterable()
   }
 
