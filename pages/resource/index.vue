@@ -37,6 +37,20 @@
               <v-container fluid>
                 <v-row>
                   <v-col>
+                    <v-text-field
+                      :placeholder="$t('crud.message.quick_search')"
+                      :value="$route.query.search"
+                      prepend-inner-icon="mdi-magnify"
+                      solo-inverted
+                      flat
+                      dense
+                      clearable
+                      @input="whenSearch"
+                    />
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
                     <c-ui-filters
                       ref="filters"
                       :loading="$fetchState.pending"
@@ -132,6 +146,7 @@ export default {
   mixins: [resource],
   data () {
     return {
+      searching: null,
       collection: [],
       meta: {}
     }
@@ -172,6 +187,15 @@ export default {
         params: this.$route.params,
         query
       })
+    },
+    whenSearch (search) {
+      if (this.searching) {
+        clearTimeout(this.searching)
+      }
+
+      this.searching = setTimeout(async () => {
+        await this.whenFilter({ currentPage: 1, search })
+      }, 300)
     },
     async whenPaginate (page) {
       await this.whenFilter({ ...this.$route.query, currentPage: page })

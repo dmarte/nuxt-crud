@@ -623,7 +623,7 @@ export default {
         meta: {
           sortBy,
           sortDesc,
-          currentPage,
+          currentPage: parseInt(currentPage),
           perPage,
           search,
           lastPage: get(result, 'meta.last_page', 1) || 1,

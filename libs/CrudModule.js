@@ -24,7 +24,7 @@ export default class CrudModule {
         form: undefined,
         primaryKey: 'id',
         resourceWrapper: '',
-        perPage: [5, 10, 30, 50, 100, 150],
+        perPage: [30, 50, 100, 150],
         routes: {
           login: 'login'
         },

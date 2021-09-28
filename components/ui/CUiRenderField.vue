@@ -118,6 +118,7 @@ export default {
   methods: {
     onInput (v) {
       this.$emit('input', { ...this.value, value: v })
+      this.$root.$emit(`change.${this.value.name}`, { ...this.value, value: v })
     }
   }
 }
