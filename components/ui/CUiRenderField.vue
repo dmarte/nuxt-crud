@@ -3,7 +3,6 @@
 </template>
 
 <script>
-import Vue from 'vue'
 import CrudResponse from '../../libs/CrudResponse'
 
 export default {
