@@ -224,12 +224,14 @@ export default {
     onFilter (perPage = 15, sortBy = 'id', sortDesc = true, onlyHiddenFields = false) {
       const out = { perPage, sortBy, sortDesc }
       this.filterable.forEach((field) => {
-        if (onlyHiddenFields && field.is !== 'CFieldHidden') {
-          return
-        }
         if (typeof field.value === 'undefined' || field.value === '' || field.value === null) {
           field.value = field.defaultValue
         }
+
+        if (!field.value && typeof field.value !== 'boolean') {
+          return
+        }
+
         if (typeof field.value === 'boolean') {
           set(out, field.name, field.value.toString())
           return

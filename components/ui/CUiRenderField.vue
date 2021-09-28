@@ -114,10 +114,9 @@ export default {
       }
 
       const component = `${this.value.is}${this.suffix}`
-
       // If no component registered
       // then render the generic
-      if (component in Vue.options.components) {
+      if (Vue.options.components[component]) {
         return component
       }
 
