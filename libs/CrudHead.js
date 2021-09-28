@@ -1,39 +1,4 @@
 export default class CrudHead {
-  /**
-   * @param {{
-        settings: {
-          visibility: {
-            create: <Boolean>,
-            update: <Boolean>,
-            index: <Boolean>,
-            detail: <Boolean>,
-            when_field_name: <String?>,
-            when_field_value: <String?>,
-          },
-          readonly: <Boolean>,
-          value: <String|Array|Object>,
-          append_icon: <String?>,
-          prepend_icon: <String?>,
-          clearable: <Boolean>,
-          dense: <Boolean>,
-          persistent_hint: <Boolean>,
-          persistent_placeholder: <Boolean>,
-          rules: <Array>,
-          items: <Array>,
-          hooks: <Array>,
-          params: <Object>,
-          min_value: <String?>,
-          max_value: <String?>,
-        },
-        label: <String>,
-        component: <String>,
-        type: <String?>,
-        name: <String?>,
-        placeholder: <String?>,
-        hint: <String?>,
-        enabled: <boolean>,
-      }} options
-   */
   constructor (options) {
     this.$options = Object.assign(
       {

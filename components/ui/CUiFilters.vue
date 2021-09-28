@@ -61,7 +61,7 @@
         <v-list-item>
           <v-select
             :value="value.sortBy"
-            :items="columns"
+            :items="columns.filter(({component}) => !['CFieldHead','CFieldTab'].includes(component))"
             :label="$t('crud.title.sort_by')"
             class="py-0 my-0"
             prepend-icon="mdi-sort"
@@ -188,7 +188,7 @@ export default {
       return this.filterable.filter(({ is }) => is !== 'CFieldHidden').some(({ name }) => this.$route.query[name])
     },
     sortable () {
-      return this.fields.filter(({ sortable }) => sortable).map(({ name, label }) => ({ value: name, text: label }))
+      return this.fields.filter(({ is, sortable }) => sortable && !['CFieldTab'].includes(is)).map(({ name, label }) => ({ value: name, text: label }))
     },
     orders () {
       return [
