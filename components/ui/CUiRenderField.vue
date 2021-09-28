@@ -113,14 +113,7 @@ export default {
         return this.value.is
       }
 
-      const component = `${this.value.is}${this.suffix}`
-      // If no component registered
-      // then render the generic
-      if (Vue.options.components[component]) {
-        return component
-      }
-
-      return 'CFieldTextDetail'
+      return `${this.value.is}${this.suffix}`
     }
   },
   methods: {
