@@ -1,11 +1,11 @@
 <template>
-  <div>{{ value }}</div>
+  <input type="hidden" :name="name" :value="value" @input="whenChange">
 </template>
 
 <script>
 import field from '../../mixins/resource/field'
 export default {
-  name: 'CFieldDetailText',
+  name: 'CFieldHiddenForm',
   mixins: [field]
 }
 </script>

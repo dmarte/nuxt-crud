@@ -1,7 +1,4 @@
-import field from './field'
-
 export default {
-  mixins: [field],
   methods: {
     resolveMinOrMaxValue (value) {
       if (!value) { return undefined }

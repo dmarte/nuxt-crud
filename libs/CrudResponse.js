@@ -192,11 +192,11 @@ export default class CrudResponse {
    * @param {String} field
    * @returns {boolean}
    */
-  has(field) {
+  has (field) {
     return !!this.$fields[field]
   }
 
-  forget(field) {
+  forget (field) {
     if (!this.has(field)) {
       return
     }
@@ -209,7 +209,7 @@ export default class CrudResponse {
    * @param {String|Array} field
    * @returns {string}
    */
-  feedback(field) {
+  feedback (field) {
     if (Array.isArray(field)) {
       for (const path of field) {
         const output = this.feedback(path)

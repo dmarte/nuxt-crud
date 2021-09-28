@@ -1,18 +1,19 @@
 import resource from './resource'
+
 export default {
-  mixins:[resource],
+  mixins: [resource],
   props: {
     parentResource: {
       type: String,
-      default() {
+      default () {
         return this.$route.params.parent
       }
     },
     parentResourceId: {
-      type: String,
-      default() {
+      type: [String, Number],
+      default () {
         return this.$route.params.parent_id
       }
-    },
+    }
   }
 }

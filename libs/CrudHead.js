@@ -241,12 +241,12 @@ export default class CrudHead {
   }
 
   min (value) {
-    this.$options.settings.min_value = value
+    this.$options.settings.params.min = value
     return this
   }
 
   max (value) {
-    this.$options.settings.max_value = value
+    this.$options.settings.params.max = value
     return this
   }
 
@@ -356,7 +356,7 @@ export default class CrudHead {
    *
    * @returns {CrudHead}
    */
-  valueFromResourceParent() {
+  valueFromResourceParent () {
     return this.valueDynamic('parentResourceId')
   }
 
@@ -365,7 +365,7 @@ export default class CrudHead {
    *
    * @returns {CrudHead}
    */
-  valueFromResource() {
+  valueFromResource () {
     return this.valueDynamic('resourceId')
   }
 

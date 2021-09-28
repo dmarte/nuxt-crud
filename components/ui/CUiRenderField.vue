@@ -1,18 +1,37 @@
 <template>
-  <component v-bind='attributes' :is='block' v-on='$listeners' />
+  <component v-bind="attributes" :is="block" v-on="{...$listeners, input: onInput}" />
 </template>
 
 <script>
+import Vue from 'vue'
+import CrudResponse from '../../libs/CrudResponse'
+
 export default {
   name: 'CUiRenderField',
   props: {
     mode: {
       type: String,
-      required: true,
+      required: true
     },
     index: {
       type: Number,
-      required: true,
+      required: true
+    },
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    dense: {
+      type: Boolean,
+      default: false
+    },
+    response: {
+      type: CrudResponse,
+      required: true
     },
     value: {
       type: Object,
@@ -20,31 +39,64 @@ export default {
         name: null,
         label: null,
         value: null,
-        is: 'CFieldText',
-      }),
-    },
+        is: 'CFieldText'
+      })
+    }
   },
   computed: {
-    isIndexMode() {
+    isFilterMode () {
+      return this.mode === 'filter'
+    },
+    isIndexMode () {
       return this.mode === 'index'
     },
-    isDetailMode() {
+    isDetailMode () {
       return this.mode === 'detail'
     },
-    isFormMode() {
+    isFormMode () {
       return ['create', 'update'].includes(this.mode)
     },
-    hasItems() {
+    hasItems () {
       return typeof this.value.items !== 'undefined'
     },
-    attributes() {
+    requiredPlaceholder () {
+      return ['CFieldText', 'CFieldNumber', 'CFieldSelectRemote', 'CFieldTextarea'].includes(this.value.is)
+    },
+    isNumeric () {
+      return this.value.is === 'CFieldNumber'
+    },
+    suffix () {
+      if (this.isFormMode || this.isFilterMode) {
+        return 'Form'
+      }
+      if (this.isDetailMode) {
+        return 'Detail'
+      }
+      if (this.isIndexMode) {
+        return 'Index'
+      }
+      return ''
+    },
+    attributes () {
       const bind = {
-        name: this.value.name,
-        label: this.value.label,
-        value: this.value.value || null
+        params: this.value.params || {},
+        name: this.value.name || '',
+        label: this.value.label || '',
+        response: this.response,
+        disabled: this.disabled,
+        loading: this.loading,
+        hint: this.value.hint || '',
+        value: this.value.value || '',
+        dense: this.dense
       }
       if (this.hasItems) {
-        bind.items = this.value.items
+        bind.items = this.isFilterMode ? [{ text: '', value: '' }, ...this.value.items] : this.value.items
+      }
+      if (!bind.value && !this.isFilterMode && this.value.defaultValue !== null) {
+        bind.value = this.value.defaultValue
+      }
+      if (this.requiredPlaceholder) {
+        bind.placeholder = this.value.placeholder || ''
       }
       return bind
     },
@@ -53,7 +105,7 @@ export default {
      *
      * @returns {string}
      */
-    block() {
+    block () {
       // List of field allowed to render as it is in any mode.
       const allowed = ['CFieldHeading']
 
@@ -61,22 +113,21 @@ export default {
         return this.value.is
       }
 
-      let prefix = `${this.mode.charAt(0).toUpperCase()}${this.mode.substr(1)}`
-
-      if (this.isFormMode) {
-        prefix = ''
-      }
-
-      const component = `${this.value.is}${prefix}`
+      const component = `${this.value.is}${this.suffix}`
 
       // If no component registered
       // then render the generic
-      if (component in this.$root.$options.components) {
+      if (component in Vue.options.components) {
         return component
       }
 
-      return `CFieldDetailText`
-    },
+      return 'CFieldTextDetail'
+    }
+  },
+  methods: {
+    onInput (v) {
+      this.$emit('input', { ...this.value, value: v })
+    }
   }
 }
 </script>

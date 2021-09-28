@@ -6,9 +6,9 @@ export default function (options) {
   const settings = Object.assign(
     {
       api: {
-        prefix: '/api/',
+        prefix: '/api/'
       },
-      modules: [],
+      modules: []
     },
     this.options.crud || {},
     options
@@ -17,16 +17,15 @@ export default function (options) {
   this.addPlugin({
     src: resolve(__dirname, 'plugin.js'),
     options: {
-      modules: settings.modules.map((module) => module.toObject()),
+      modules: settings.modules.map(module => module.toObject()),
       api: settings.api,
       store: {
         messenger,
-        breadcrumbs,
-      },
-    },
+        breadcrumbs
+      }
+    }
   })
   this.extendRoutes((routes, resolve) => {
-
     routes.push({
       path: '/c/:resource',
       name: 'crud-resource-index',
@@ -49,46 +48,27 @@ export default function (options) {
       }
     })
 
-    // routes.push({
-    //   path: '/c/:parent/:parent_id/:resource',
-    //   name: 'crud-resource-child-index',
-    //   component: resolve(__dirname, 'pages/child/index'),
-    //   props: {
-    //     mode: 'index',
-    //   }
-    // })
-    //
-    // routes.push({
-    //   path: '/c/:parent/:parent_id/:resource/create',
-    //   name: 'crud-resource-child-create',
-    //   component: resolve(__dirname, 'pages/child/form'),
-    //   props: {
-    //     mode: 'create',
-    //   }
-    // })
-    //
-    // routes.push({
-    //   path: '/c/:parent/:parent_id/:resource/:resource_id',
-    //   name: 'crud-resource-child-detail',
-    //   component: resolve(__dirname, 'pages/child/detail'),
-    //   props: {
-    //     mode: 'detail',
-    //     parentResource: route => route.params.parent,
-    //     parentResourceId: route => route.params.parent_id,
-    //     resource: route => route.params.resource,
-    //     resourceId: route => route.params.resource_id
-    //   }
-    // })
-    //
-    // routes.push({
-    //   path: '/c/:parent/:parent_id/:resource/:resource_id/update',
-    //   name: 'crud-resource-child-update',
-    //   component: resolve(__dirname, 'pages/child/form'),
-    //   props: {
-    //     mode: 'update'
-    //   }
-    // })
+    routes.push({
+      path: '/c/:resource/:resourceId',
+      name: 'crud-resource-detail',
+      component: resolve(__dirname, 'pages/resource/detail'),
+      props: {
+        mode: 'detail',
+        resource: route => route.params.resource,
+        resourceId: route => route.params.resourceId
+      }
+    })
 
+    routes.push({
+      path: '/c/:resource/:resourceId/update',
+      name: 'crud-resource-update',
+      component: resolve(__dirname, 'pages/resource/form'),
+      props: {
+        mode: 'update',
+        resource: route => route.params.resource,
+        resourceId: route => route.params.resourceId
+      }
+    })
   })
 
   // Register components

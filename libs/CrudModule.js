@@ -1,10 +1,5 @@
 import CrudField from './CrudField'
 import CrudAction from './actions/CrudAction'
-import CrudActionCreate from './actions/CrudActionCreate'
-import CrudActionDetail from './actions/CrudActionDetail'
-import CrudActionUpdate from './actions/CrudActionUpdate'
-import CrudActionIndex from './actions/CrudActionIndex'
-import CrudActionDelete from './actions/CrudActionDelete'
 
 /**
  * This class represent a base wrapper
@@ -29,7 +24,7 @@ export default class CrudModule {
         form: undefined,
         primaryKey: 'id',
         resourceWrapper: '',
-        perPage: [10, 30, 50, 100, 150],
+        perPage: [5, 10, 30, 50, 100, 150],
         routes: {
           login: 'login'
         },
@@ -60,7 +55,30 @@ export default class CrudModule {
    * @returns {CrudModule}
    */
   withDefaultActions () {
-    return this.withActionCreate()
+    return this
+      .withActionCreate()
+      .withActionDetail()
+      .withActionIndex()
+      .withActionUpdate()
+      .withActionDestroy()
+  }
+
+  withActionDestroy () {
+    const action = new CrudAction()
+    action
+      .name('destroy')
+      .icon('mdi-delete-outline')
+      .label('crud.actions.destroy')
+      .emits('destroy')
+      .inline()
+      .hideWhenUpdating()
+      .hideWhenCreating()
+      .withConfirmation()
+      .confirmationTextTitle('crud.title.destroy')
+      .confirmationTextSubmit('crud.actions.destroy')
+      .confirmationStyleDestructive()
+
+    return this.action(action)
   }
 
   /**
@@ -68,7 +86,7 @@ export default class CrudModule {
    *
    * @returns {CrudModule}
    */
-  withActionCreate() {
+  withActionCreate () {
     const action = new CrudAction()
     action
       .name('create')
@@ -76,6 +94,10 @@ export default class CrudModule {
       .icon('mdi-plus')
       .emits('create')
       .standalone()
+      .showOnIndex()
+      .showOnDetail()
+      .hideWhenCreating()
+      .hideWhenUpdating()
 
     if (this.$options.parent) {
       action
@@ -83,12 +105,91 @@ export default class CrudModule {
         .setParamFromComponent('parentResource', 'parent')
         .setParamFromComponent('parentResourceId', 'parent_id')
         .setParamFromComponent('resource', 'resource')
-        .setQueryFromRoute('fullPath', 'redirect')
     } else {
       action
         .route({ name: 'crud-resource-create' })
         .setParamFromComponent('resource', 'resource')
-        .setQueryFromRoute('fullPath', 'redirect')
+    }
+
+    return this.action(action)
+  }
+
+  withActionIndex () {
+    const action = new CrudAction()
+    action
+      .name('index')
+      .label('crud.actions.index')
+      .icon('mdi-format-list-numbered')
+      .emits('index')
+      .inline()
+      .hideOnIndex()
+
+    if (this.$options.parent) {
+      action
+        .route({ name: 'crud-resource-child-index' })
+        .setParamFromComponent('parentResource', 'parent')
+        .setParamFromComponent('parentResourceId', 'parent_id')
+        .setParamFromComponent('resource', 'resource')
+    } else {
+      action
+        .route({ name: 'crud-resource-index' })
+        .setParamFromComponent('resource', 'resource')
+        .setParamFromComponent('resourceId', 'resourceId')
+    }
+
+    return this.action(action)
+  }
+
+  withActionDetail () {
+    const action = new CrudAction()
+    action
+      .name('detail')
+      .label('crud.actions.detail')
+      .icon('mdi-eye-outline')
+      .emits('detail')
+      .inline()
+      .hideOnDetail()
+      .setQueryFromRoute('fullPath', 'redirect')
+
+    if (this.$options.parent) {
+      action
+        .route({ name: 'crud-resource-child-detail' })
+        .setParamFromComponent('parentResource', 'parent')
+        .setParamFromComponent('parentResourceId', 'parent_id')
+        .setParamFromComponent('resource', 'resource')
+    } else {
+      action
+        .route({ name: 'crud-resource-detail' })
+        .setParamFromComponent('resource', 'resource')
+        .setParamFromComponent('resourceId', 'resourceId')
+    }
+
+    return this.action(action)
+  }
+
+  withActionUpdate () {
+    const action = new CrudAction()
+    action
+      .name('update')
+      .label('crud.actions.update')
+      .icon('mdi-pencil')
+      .emits('update')
+      .inline()
+      .hideWhenCreating()
+      .hideWhenUpdating()
+      .setQueryFromRoute('fullPath', 'redirect')
+
+    if (this.$options.parent) {
+      action
+        .route({ name: 'crud-resource-child-detail' })
+        .setParamFromComponent('parentResource', 'parent')
+        .setParamFromComponent('parentResourceId', 'parent_id')
+        .setParamFromComponent('resource', 'resource')
+    } else {
+      action
+        .route({ name: 'crud-resource-update' })
+        .setParamFromComponent('resource', 'resource')
+        .setParamFromComponent('resourceId', 'resourceId')
     }
 
     return this.action(action)
@@ -100,9 +201,9 @@ export default class CrudModule {
    * @param {String} parentModuleName
    * @returns {CrudModule}
    */
-  parent(parentModuleName) {
+  parent (parentModuleName) {
     this.$options.parent = parentModuleName
-   return this
+    return this
   }
 
   /**
@@ -110,7 +211,7 @@ export default class CrudModule {
    * @param {String} path
    * @returns {CrudModule}
    */
-  wrapper(path) {
+  wrapper (path) {
     this.$options.resourceWrapper = path
     return this
   }
@@ -147,8 +248,6 @@ export default class CrudModule {
     this.$options.actions.push(action)
     return this
   }
-
-
 
   /**
    * Set the primary key for the.
