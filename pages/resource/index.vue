@@ -96,15 +96,17 @@
               />
             </template>
             <template #footer>
-              <v-pagination
-                v-if="meta.lastPage > 1"
-                :disabled="$fetchState.pending"
-                :value="meta.currentPage"
-                :length="meta.lastPage"
-                :total-visible="8"
-                circle
-                @input="whenPaginate"
-              />
+              <div v-if="meta.lastPage > 1" class="pb-4">
+                <v-divider class="mb-3" />
+                <v-pagination
+                  :disabled="$fetchState.pending"
+                  :value="meta.currentPage"
+                  :length="meta.lastPage"
+                  :total-visible="8"
+                  circle
+                  @input="whenPaginate"
+                />
+              </div>
             </template>
           </v-data-table>
         </v-card>

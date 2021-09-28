@@ -5,6 +5,11 @@ export default class CrudFieldNumber extends CrudField {
     super(name, 'CFieldNumber')
   }
 
+  format () {
+    this.$options.params.format = '0,0.00'
+    return this
+  }
+
   min (value = 0) {
     this.$options.min_value = value
     return this

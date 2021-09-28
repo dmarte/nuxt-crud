@@ -58,8 +58,8 @@ export default class CrudModule {
     return this
       .withActionCreate()
       .withActionDetail()
-      .withActionUpdate()
       .withActionIndex()
+      .withActionUpdate()
       .withActionDestroy()
   }
 

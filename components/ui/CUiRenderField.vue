@@ -21,6 +21,10 @@ export default {
       type: Boolean,
       default: false
     },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     dense: {
       type: Boolean,
       default: false
@@ -79,7 +83,7 @@ export default {
         name: this.value.name || '',
         label: this.value.label || '',
         response: this.response,
-        disabled: false,
+        disabled: this.disabled,
         loading: this.loading,
         hint: this.value.hint || '',
         value: this.value.value || '',

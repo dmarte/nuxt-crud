@@ -359,7 +359,7 @@ export default {
      * @returns {Number}
      */
     getCurrentPage (resourceSettings) {
-      return this.$route.currentPage || 1
+      return this.$route.query.currentPage || 1
     },
 
     /**
@@ -626,6 +626,7 @@ export default {
           currentPage,
           perPage,
           search,
+          lastPage: get(result, 'meta.last_page', 1) || 1,
           from: parseInt(get(result, 'meta.from', 0)) || 0,
           to: get(result, 'meta.to', 0) || 0,
           total: get(result, 'meta.total', 0) || 0,

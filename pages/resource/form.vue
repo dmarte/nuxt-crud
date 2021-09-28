@@ -1,20 +1,18 @@
 <template>
   <v-form @submit.prevent="whenSave">
-    <pre>
-      {{ settings.hooks }}
-    </pre>
     <c-ui-messenger />
     <v-card :loading="busy">
       <v-card-title>
         {{ getResourcePageTitle(settings.name, mode) }}
       </v-card-title>
-      <v-card-text v-if="!busy">
+      <v-card-text>
         <template v-for="(field, index) in fields">
           <c-ui-render-field
             :key="`field_${index}`"
             :index="index"
             :mode="mode"
             :response="response"
+            :disabled="busy"
             :value="field"
             @input="f => whenFieldChange(f, index)"
           />
