@@ -3,7 +3,6 @@
 </template>
 
 <script>
-import Vue from 'vue'
 import CrudResponse from '../../libs/CrudResponse'
 
 export default {
@@ -113,15 +112,7 @@ export default {
         return this.value.is
       }
 
-      const component = `${this.value.is}${this.suffix}`
-
-      // If no component registered
-      // then render the generic
-      if (component in Vue.options.components) {
-        return component
-      }
-
-      return 'CFieldTextDetail'
+      return `${this.value.is}${this.suffix}`
     }
   },
   methods: {
