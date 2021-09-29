@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import { isEmpty } from 'lodash'
 import CrudResponse from '../../libs/CrudResponse'
 
 export default {
@@ -91,12 +92,14 @@ export default {
       if (this.hasItems) {
         bind.items = this.isFilterMode ? [{ text: '', value: '' }, ...this.value.items] : this.value.items
       }
-      if (!bind.value && !this.isFilterMode && this.value.defaultValue !== null) {
+      if (isEmpty(bind.value) && this.value.defaultValue !== null) {
         bind.value = this.value.defaultValue
       }
+
       if (this.requiredPlaceholder) {
         bind.placeholder = this.value.placeholder || ''
       }
+
       return bind
     },
     /**

@@ -227,18 +227,14 @@ export default {
       query.query.sortDesc = undefined
       query.query.search = undefined
 
-      if (this.fields) {
-        this.fields
-          .filter(({ filter }) => filter)
-          .reduce((i, field) => {
-            if (has(query.query, field.name)) {
-              return i
-            }
-            set(query.query, field.name, field.value)
-            return i++
-          }, 0)
-      }
-
+      this.filterable
+        .filter(({ filter }) => filter)
+        .forEach((field) => {
+          if (has(query.query, field.name)) {
+            return
+          }
+          set(query.query, field.name, field.value || field.defaultValue)
+        })
       return query
     }
   }

@@ -135,7 +135,7 @@
 </template>
 
 <script>
-import { set, cloneDeep } from 'lodash'
+import { set, cloneDeep, isEmpty, isBoolean } from 'lodash'
 import CrudResponse from '../../libs/CrudResponse'
 import CUiFieldRender from './CUiRenderField'
 
@@ -221,18 +221,18 @@ export default {
         .filter(({ filter, visibility }) => filter || visibility.filter)
         .map(cloneDeep)
     },
-    onFilter (perPage = 15, sortBy = 'id', sortDesc = true, onlyHiddenFields = false) {
+    onFilter (perPage = 15, sortBy = 'id', sortDesc = true) {
       const out = { perPage, sortBy, sortDesc }
       this.filterable.forEach((field) => {
-        if (typeof field.value === 'undefined' || field.value === '' || field.value === null) {
+        if (isEmpty(field.value) && !isEmpty(field.defaultValue)) {
           field.value = field.defaultValue
         }
 
-        if (!field.value && typeof field.value !== 'boolean') {
+        if (isEmpty(field.value)) {
           return
         }
 
-        if (typeof field.value === 'boolean') {
+        if (isBoolean(field.value)) {
           set(out, field.name, field.value.toString())
           return
         }

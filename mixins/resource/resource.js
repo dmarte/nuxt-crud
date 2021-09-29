@@ -24,26 +24,22 @@ export default {
     }
   },
   data () {
+    const settings = this.getResourceSettings(this.resource)
+    let fields = []
+    if (this.isForm) {
+      fields = this.getResourceFormFields(settings)
+    } else if (this.isIndex) {
+      fields = this.getResourceHeaders(settings)
+    } else {
+      fields = this.getResourceFields(this.mode, settings)
+    }
+    const model = this.buildResourceModel(fields)
     return {
       response: new CrudResponse(),
-      model: {},
-      fields: [],
-      filterable: [],
-      settings: { head: [], actions: [], perPage: [30] }
-    }
-  },
-  mounted () {
-    this.settings = this.getResourceSettings(this.resource)
-    if (this.isForm) {
-      this.fields = this.getResourceFormFields(this.settings)
-    } else if (this.isIndex) {
-      this.fields = this.getResourceHeaders(this.settings)
-    } else {
-      this.fields = this.getResourceFields(this.mode, this.settings)
-    }
-    this.model = this.buildResourceModel(this.fields)
-    if (this.mode === 'index') {
-      this.filterable = this.getResourceFields('filter', this.settings)
+      model,
+      fields,
+      filterable: this.mode === 'index' ? this.getResourceFields('filter', settings) : [],
+      settings
     }
   },
   computed: {
