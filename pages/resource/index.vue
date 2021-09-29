@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-col>
-        <v-card>
+        <v-card :flat="flat" :outlined="outlined">
           <v-toolbar
             dense
             flat
@@ -14,13 +14,19 @@
             <c-ui-actions-render
               :mode="mode"
               :resource="resource"
-              :resource-id="$route.params.resourceId"
-              :parent-resource="$route.params.parentResource"
-              :parent-resource-id="$route.params.parentResourceId"
+              :resource-id="resourceId"
+              :parent-resource="parentResource"
+              :parent-resource-id="parentResourceId"
               :actions="getResourceActionsStandalone(settings)"
               standalone
             />
           </v-toolbar>
+          <pre>
+            Resource: {{ resource }}
+            ID: {{ resourceId }}
+            Parent: {{ parentResource }}
+            Parent ID: {{ parentResourceId }}
+          </pre>
           <v-data-table
             :headers="headers"
             :items="collection"
@@ -131,7 +137,7 @@
 
 <script>
 import { cloneDeep, set, has, get } from 'lodash'
-import resource from '../../mixins/resource/resource'
+import child from '../../mixins/resource/child'
 import CUiRenderField from '../../components/ui/CUiRenderField'
 import CUiFilters from '../../components/ui/CUiFilters'
 import CUiActionsRender from '../../components/ui/CUiActionRender'
@@ -143,7 +149,21 @@ export default {
     CUiFilters,
     CUiRenderField
   },
-  mixins: [resource],
+  mixins: [child],
+  props: {
+    flat: {
+      type: Boolean,
+      default: false
+    },
+    outlined: {
+      type: Boolean,
+      default: false
+    },
+    query: {
+      type: Object,
+      default: () => ({})
+    }
+  },
   data () {
     return {
       searching: null,
@@ -235,6 +255,7 @@ export default {
           }
           set(query.query, field.name, field.value || field.defaultValue)
         })
+      query.query = { ...query.query, ...this.query }
       return query
     }
   }

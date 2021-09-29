@@ -180,7 +180,7 @@ export default {
       )
     },
     mapResourceField (field, mode, resourceSettings) {
-      const out = {
+      let out = {
         sortable: field.settings.sortable,
         filter: field.settings.filter,
         visibility: field.settings.visibility,
@@ -217,13 +217,6 @@ export default {
 
       out.is = field.component
 
-      if (['CFieldHeading', 'CFieldTab'].includes(out.is)) {
-        out.label = this.getTranslation(out.label)
-      }
-      if (out.is === 'CFieldTab') {
-        out.params.fields = out.params.fields.filter(({ settings: { visibility } }) => visibility[mode]).map(f => this.mapResourceField(f, mode, resourceSettings))
-      }
-
       if (field.settings.items.length > 0) {
         out.items = field.settings.items.map((option) => {
           if (typeof option === 'string') {
@@ -243,7 +236,33 @@ export default {
           return option
         })
       }
+
+      switch (out.is) {
+        case 'CFieldHeading':
+        case 'CFieldTab':
+          out.label = this.getTranslation(out.label)
+          if (out.is === 'CFieldTab') {
+            out.params.fields = out.params.fields.filter(({ settings: { visibility } }) => visibility[mode]).map(f => this.mapResourceField(f, mode, resourceSettings))
+          }
+          break
+        case 'CFieldHasMany':
+          out = this.mapResourceFieldHasMany(out)
+          break
+      }
       return out
+    },
+    mapResourceFieldHasMany (field) {
+      const mode = 'index'
+      field.label = this.getResourcePageTitle(field.params.moduleName, mode)
+      field.params.parentResource = this.resource
+      field.params.parentResourceId = this.resourceId
+      field.params.resource = field.params.moduleName
+      field.params.resourceId = null
+      field.params.settings = this.getResourceSettings(field.params.moduleName)
+      field.params.fields = this.getResourceFields(mode, field.params.settings)
+      field.params.query = {}
+      field.params.query[field.params.foreignKey] = this.resourceId
+      return field
     },
     /**
      * Get the fields for a given resource populated.

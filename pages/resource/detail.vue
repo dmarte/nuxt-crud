@@ -30,20 +30,26 @@
     <c-ui-messenger />
     <v-card-text v-if="!$fetchState.pending">
       <template v-if="hasTabs">
-        <v-tabs v-model="currentTab">
+        <v-tabs v-model="currentTab" fixed-tabs show-arrows>
+          <v-tabs-slider color="primary lighten-3" />
           <v-tab key="crud-detail">
-            {{ getResourcePageTitle(resource,mode) }}
+            {{ getResourcePageTitle(resource, mode) }}
           </v-tab>
           <template v-for="tab in fields.filter(({is}) => is ==='CFieldTab')">
             <v-tab :key="tab.name">
               {{ tab.label }}
             </v-tab>
           </template>
+          <template v-for="field in fields.filter(({is}) => is ==='CFieldHasMany')">
+            <v-tab :key="field.name">
+              {{ field.label }}
+            </v-tab>
+          </template>
         </v-tabs>
         <v-tabs-items v-model="currentTab">
           <v-tab-item key="crud-detail">
             <v-list dense>
-              <template v-for="(field, index) in fields.filter(({is}) => is !== 'CFieldTab')">
+              <template v-for="(field, index) in fields.filter(({is}) => !['CFieldTab','CFieldHasMany'].includes(is))">
                 <c-ui-render-field
                   :key="`field_${index}`"
                   :index="index"
@@ -73,6 +79,19 @@
                   <v-divider v-if="fields.length > (index+1)" :key="`divider_${index}`" />
                 </template>
               </v-list>
+            </v-tab-item>
+          </template>
+          <template v-for="(relation, index) in fields.filter(({is}) => is === 'CFieldHasMany')">
+            <v-tab-item :key="relation.name">
+              <c-ui-render-field
+                :key="`field_${relation.name}`"
+                :index="index"
+                :value="relation"
+                :response="response"
+                :loading="$fetchState.pending"
+                :mode="mode"
+                dense
+              />
             </v-tab-item>
           </template>
         </v-tabs-items>
