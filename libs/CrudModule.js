@@ -1,4 +1,5 @@
 import CrudField from './CrudField'
+import CrudFieldHasMany from './CrudFieldHasMany'
 import CrudAction from './actions/CrudAction'
 
 /**
@@ -269,7 +270,12 @@ export default class CrudModule {
     if (!(field instanceof CrudField)) {
       throw new TypeError('The field should be an instance of CrudHead object.')
     }
+    if (field instanceof CrudFieldHasMany && field.$options.name === `${this.$options.name}.${this.$options.primaryKey}`) {
+      throw new Error('You can\'t use has many field for the same definition module.')
+    }
+
     field.dense(this.$options.dense)
+
     this.$options.head.push(field)
     return this
   }

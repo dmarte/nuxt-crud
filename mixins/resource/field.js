@@ -7,7 +7,7 @@ export default {
       default: () => ({})
     },
     value: {
-      type: [String, Number, Object, Array],
+      type: [String, Number, Object, Array, Boolean],
       default: null
     },
     name: {

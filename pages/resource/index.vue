@@ -21,12 +21,6 @@
               standalone
             />
           </v-toolbar>
-          <pre>
-            Resource: {{ resource }}
-            ID: {{ resourceId }}
-            Parent: {{ parentResource }}
-            Parent ID: {{ parentResourceId }}
-          </pre>
           <v-data-table
             :headers="headers"
             :items="collection"
@@ -153,7 +147,7 @@ export default {
   props: {
     flat: {
       type: Boolean,
-      default: false
+      default: true
     },
     outlined: {
       type: Boolean,
@@ -248,7 +242,6 @@ export default {
       query.query.search = undefined
 
       this.filterable
-        .filter(({ filter }) => filter)
         .forEach((field) => {
           if (has(query.query, field.name)) {
             return
