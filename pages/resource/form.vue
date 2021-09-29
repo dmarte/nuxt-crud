@@ -13,6 +13,7 @@
             :mode="mode"
             :response="response"
             :disabled="busy"
+            :context='model'
             :value="field"
             @input="f => whenFieldChange(f, index)"
           />

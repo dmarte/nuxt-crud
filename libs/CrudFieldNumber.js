@@ -5,8 +5,8 @@ export default class CrudFieldNumber extends CrudField {
     super(name, 'CFieldNumber')
   }
 
-  format () {
-    this.$options.params.format = '0,0.00'
+  withoutFormat () {
+    this.$options.settings.params.without_format = true
     return this
   }
 
