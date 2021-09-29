@@ -94,6 +94,7 @@
                 :loading="$fetchState.pending"
                 :mode="mode"
                 :response="response"
+                :context='model'
                 :value="parseCollectionField(column.field, props.value)"
               />
             </template>

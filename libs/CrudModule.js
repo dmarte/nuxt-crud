@@ -18,17 +18,9 @@ export default class CrudModule {
     this.$options = Object.assign(
       {
         name,
-        parent: null,
-        dense: false,
-        fullscreen: false,
-        width: 250, // Size of the form in modal
-        form: undefined,
         primaryKey: 'id',
         resourceWrapper: '',
         perPage: [30, 50, 100, 150],
-        routes: {
-          login: 'login'
-        },
         settings: {},
         hooks: {
           beforeCreate: undefined,
@@ -51,10 +43,8 @@ export default class CrudModule {
     )
   }
 
-  /**
-   * Set the default crud actions.
-   * @returns {CrudModule}
-   */
+
+
   withDefaultActions () {
     return this
       .withActionCreate()

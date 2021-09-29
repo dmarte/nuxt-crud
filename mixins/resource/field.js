@@ -6,6 +6,10 @@ export default {
       type: Object,
       default: () => ({})
     },
+    context: {
+      type: Object,
+      required: true
+    },
     value: {
       type: [String, Number, Object, Array, Boolean],
       default: null
