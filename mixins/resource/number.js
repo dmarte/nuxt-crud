@@ -1,9 +1,13 @@
 export default {
   methods: {
     format (value) {
-      return new Intl.NumberFormat(this.$i18n.locale, {
+      if (this.params.without_format) {
+        return value
+      }
+      return new Intl.NumberFormat('en', {
         maximumFractionDigits: 2,
-        maximumSignificantDigits: 2
+        maximumSignificantDigits: 2,
+        minimumFractionDigits: 2
       }).format(value)
     }
   }

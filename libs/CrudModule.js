@@ -1,4 +1,5 @@
 import CrudField from './CrudField'
+import CrudFieldHasMany from './CrudFieldHasMany'
 import CrudAction from './actions/CrudAction'
 
 /**
@@ -17,17 +18,9 @@ export default class CrudModule {
     this.$options = Object.assign(
       {
         name,
-        parent: null,
-        dense: false,
-        fullscreen: false,
-        width: 250, // Size of the form in modal
-        form: undefined,
         primaryKey: 'id',
         resourceWrapper: '',
-        perPage: [5, 10, 30, 50, 100, 150],
-        routes: {
-          login: 'login'
-        },
+        perPage: [30, 50, 100, 150],
         settings: {},
         hooks: {
           beforeCreate: undefined,
@@ -50,10 +43,8 @@ export default class CrudModule {
     )
   }
 
-  /**
-   * Set the default crud actions.
-   * @returns {CrudModule}
-   */
+
+
   withDefaultActions () {
     return this
       .withActionCreate()
@@ -269,7 +260,12 @@ export default class CrudModule {
     if (!(field instanceof CrudField)) {
       throw new TypeError('The field should be an instance of CrudHead object.')
     }
+    if (field instanceof CrudFieldHasMany && field.$options.name === `${this.$options.name}.${this.$options.primaryKey}`) {
+      throw new Error('You can\'t use has many field for the same definition module.')
+    }
+
     field.dense(this.$options.dense)
+
     this.$options.head.push(field)
     return this
   }

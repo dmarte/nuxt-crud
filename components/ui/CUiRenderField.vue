@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import Vue from 'vue'
+import { isEmpty } from 'lodash'
 import CrudResponse from '../../libs/CrudResponse'
 
 export default {
@@ -32,6 +32,10 @@ export default {
     response: {
       type: CrudResponse,
       required: true
+    },
+    context: {
+      type: Object,
+      default: () => ({})
     },
     value: {
       type: Object,
@@ -80,6 +84,7 @@ export default {
     attributes () {
       const bind = {
         params: this.value.params || {},
+        context: this.context,
         name: this.value.name || '',
         label: this.value.label || '',
         response: this.response,
@@ -92,12 +97,14 @@ export default {
       if (this.hasItems) {
         bind.items = this.isFilterMode ? [{ text: '', value: '' }, ...this.value.items] : this.value.items
       }
-      if (!bind.value && !this.isFilterMode && this.value.defaultValue !== null) {
+      if (isEmpty(bind.value) && this.value.defaultValue !== null) {
         bind.value = this.value.defaultValue
       }
+
       if (this.requiredPlaceholder) {
         bind.placeholder = this.value.placeholder || ''
       }
+
       return bind
     },
     /**
@@ -113,20 +120,13 @@ export default {
         return this.value.is
       }
 
-      const component = `${this.value.is}${this.suffix}`
-
-      // If no component registered
-      // then render the generic
-      if (component in Vue.options.components) {
-        return component
-      }
-
-      return 'CFieldTextDetail'
+      return `${this.value.is}${this.suffix}`
     }
   },
   methods: {
     onInput (v) {
       this.$emit('input', { ...this.value, value: v })
+      this.$root.$emit(`change.${this.value.name}`, { ...this.value, value: v })
     }
   }
 }

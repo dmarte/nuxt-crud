@@ -61,7 +61,7 @@
         <v-list-item>
           <v-select
             :value="value.sortBy"
-            :items="columns"
+            :items="columns.filter(({component}) => !['CFieldHead','CFieldTab'].includes(component))"
             :label="$t('crud.title.sort_by')"
             class="py-0 my-0"
             prepend-icon="mdi-sort"
@@ -135,7 +135,7 @@
 </template>
 
 <script>
-import { set, cloneDeep } from 'lodash'
+import { set, cloneDeep, isEmpty, isBoolean } from 'lodash'
 import CrudResponse from '../../libs/CrudResponse'
 import CUiFieldRender from './CUiRenderField'
 
@@ -188,7 +188,7 @@ export default {
       return this.filterable.filter(({ is }) => is !== 'CFieldHidden').some(({ name }) => this.$route.query[name])
     },
     sortable () {
-      return this.fields.filter(({ sortable }) => sortable).map(({ name, label }) => ({ value: name, text: label }))
+      return this.fields.filter(({ is, sortable }) => sortable && !['CFieldTab'].includes(is)).map(({ name, label }) => ({ value: name, text: label }))
     },
     orders () {
       return [
@@ -221,16 +221,18 @@ export default {
         .filter(({ filter, visibility }) => filter || visibility.filter)
         .map(cloneDeep)
     },
-    onFilter (perPage = 15, sortBy = 'id', sortDesc = true, onlyHiddenFields = false) {
+    onFilter (perPage = 15, sortBy = 'id', sortDesc = true) {
       const out = { perPage, sortBy, sortDesc }
       this.filterable.forEach((field) => {
-        if (onlyHiddenFields && field.is !== 'CFieldHidden') {
-          return
-        }
-        if (typeof field.value === 'undefined' || field.value === '' || field.value === null) {
+        if (isEmpty(field.value) && (!isEmpty(field.defaultValue) || isBoolean(field.defaultValue))) {
           field.value = field.defaultValue
         }
-        if (typeof field.value === 'boolean') {
+
+        if (isEmpty(field.value) && !isBoolean(field.value)) {
+          return
+        }
+
+        if (isBoolean(field.value)) {
           set(out, field.name, field.value.toString())
           return
         }

@@ -25,13 +25,20 @@ export default {
   },
   data () {
     const settings = this.getResourceSettings(this.resource)
-    const fields = this.getResourceFields(this.mode, settings)
-    const filterable = this.getResourceFields('filter', settings)
+    let fields = []
+    if (this.isForm) {
+      fields = this.getResourceFormFields(settings)
+    } else if (this.isIndex) {
+      fields = this.getResourceHeaders(settings)
+    } else {
+      fields = this.getResourceFields(this.mode, settings)
+    }
+    const model = this.buildResourceModel(fields)
     return {
       response: new CrudResponse(),
-      model: this.buildResourceModel(fields),
+      model,
       fields,
-      filterable,
+      filterable: this.mode === 'index' ? this.getResourceFields('filter', settings) : [],
       settings
     }
   },
@@ -44,6 +51,12 @@ export default {
     },
     isDetail () {
       return this.mode === 'detail' && this.resourceId
+    },
+    isIndex () {
+      return this.mode === 'index'
+    },
+    isForm () {
+      return this.isUpdating || this.isCreating
     },
     shouldFetchResource () {
       return this.isUpdating || this.isDetail
@@ -166,6 +179,91 @@ export default {
         this.$crud.modules.find(({ name }) => name === resourceName)
       )
     },
+    mapResourceField (field, mode, resourceSettings) {
+      let out = {
+        sortable: field.settings.sortable,
+        filter: field.settings.filter,
+        visibility: field.settings.visibility,
+        params: {
+          ...field.settings.params
+        },
+        name: field.name,
+        label: this.getTranslationForFieldLabel(
+          resourceSettings.name,
+          field.name,
+          field.label
+        ) || undefined,
+        placeholder: this.getTranslationForFieldPlaceholder(
+          resourceSettings.name,
+          field.name
+        ) || undefined,
+        hint: this.getTranslationForFieldHint(
+          resourceSettings.name,
+          field.name
+        ) || undefined
+      }
+
+      if (field.settings.valuePath) {
+        const callback = get(
+          this,
+          field.settings.valuePath,
+          field.settings.value
+        )
+
+        out.defaultValue = isFunction(callback) ? callback(field) : callback
+      } else {
+        out.defaultValue = field.settings.value
+      }
+
+      out.is = field.component
+
+      if (field.settings.items.length > 0) {
+        out.items = field.settings.items.map((option) => {
+          if (typeof option === 'string') {
+            return {
+              value: option,
+              text: this.getTranslation(option, 1, {}, option)
+            }
+          }
+          if (option.text) {
+            option.text = this.getTranslation(
+              option.text,
+              1,
+              {},
+              option.text
+            )
+          }
+          return option
+        })
+      }
+
+      switch (out.is) {
+        case 'CFieldHeading':
+        case 'CFieldTab':
+          out.label = this.getTranslation(out.label)
+          if (out.is === 'CFieldTab') {
+            out.params.fields = out.params.fields.filter(({ settings: { visibility } }) => visibility[mode]).map(f => this.mapResourceField(f, mode, resourceSettings))
+          }
+          break
+        case 'CFieldHasMany':
+          out = this.mapResourceFieldHasMany(out)
+          break
+      }
+      return out
+    },
+    mapResourceFieldHasMany (field) {
+      const mode = 'index'
+      field.label = this.getResourcePageTitle(field.params.moduleName, mode)
+      field.params.parentResource = this.resource
+      field.params.parentResourceId = this.resourceId
+      field.params.resource = field.params.moduleName
+      field.params.resourceId = null
+      field.params.settings = this.getResourceSettings(field.params.moduleName)
+      field.params.fields = this.getResourceFields(mode, field.params.settings)
+      field.params.query = {}
+      field.params.query[field.params.foreignKey] = this.resourceId
+      return field
+    },
     /**
      * Get the fields for a given resource populated.
      *
@@ -174,80 +272,10 @@ export default {
      * @returns {Array<{name, label, placeholder, hint, value, is, items}>}
      */
     getResourceFields (mode, resourceSettings) {
-      return resourceSettings.head
+      return resourceSettings
+        .head
         .filter(({ settings: { visibility } }) => visibility[mode])
-        .map((field) => {
-          const out = {}
-          out.sortable = field.settings.sortable
-          out.filter = field.settings.filter
-          out.visibility = field.settings.visibility
-          out.params = field.settings.params
-          out.name = field.name
-          out.label =
-          this.getTranslationForFieldLabel(
-            resourceSettings.name,
-            field.name,
-            field.label
-          ) || undefined
-          out.placeholder =
-          this.getTranslationForFieldPlaceholder(
-            resourceSettings.name,
-            field.name
-          ) || undefined
-          out.hint =
-          this.getTranslationForFieldHint(
-            resourceSettings.name,
-            field.name
-          ) || undefined
-
-          if (field.settings.valuePath) {
-            const callback = get(
-              this,
-              field.settings.valuePath,
-              field.settings.value
-            )
-
-            out.defaultValue = isFunction(callback) ? callback(field) : callback
-          } else {
-            out.defaultValue = field.settings.value
-          }
-
-          out.is = field.component
-
-          if (out.is === 'CFieldHeading') {
-            out.label = this.getTranslation(out.label)
-          }
-
-          if (field.settings.items.length > 0) {
-            out.items = field.settings.items.map((option) => {
-              if (typeof option === 'string') {
-                return {
-                  value: option,
-                  text: this.getTranslation(option, 1, {}, option)
-                }
-              }
-              if (option.text) {
-                option.text = this.getTranslation(
-                  option.text,
-                  1,
-                  {},
-                  option.text
-                )
-              }
-              return option
-            })
-          }
-          return out
-        })
-    },
-    /**
-     * Check if a given resource has a parent resource.
-     *
-     * @param {any} resourceSettings
-     * @returns {boolean}
-     */
-    hasResourceParent (resourceSettings) {
-      return !!resourceSettings.parent
+        .map(field => this.mapResourceField(field, mode, resourceSettings))
     },
     /**
      * Get the primary key name
@@ -264,27 +292,6 @@ export default {
      */
     getResourceKeyValue (resourceSettings) {
       return this.resourceId
-    },
-    /**
-     * Get the parent resource.
-     *
-     * @param {any} resourceSettings
-     * @returns {String}
-     */
-    getResourceParent (resourceSettings) {
-      return this.parentResource || resourceSettings.parent
-    },
-    /**
-     * Get the resource parent primary key value.
-     *
-     * @param {any} resourceSettings
-     * @returns {null|*}
-     */
-    getResourceParentKeyValue (resourceSettings) {
-      if (!resourceSettings.parent) {
-        return null
-      }
-      return this.parentResourceId
     },
     /**
      * Get the list of actions for standalone only.
@@ -332,7 +339,7 @@ export default {
       if (this.$route.query.sortBy) {
         return this.$route.query.sortBy
       }
-      const field = resourceSettings.head.filter(({ settings: { visibility } }) => visibility[this.mode]).shift()
+      const field = resourceSettings.head.filter(({ component, settings: { visibility } }) => visibility[this.mode] && !['CFieldHead', 'CFieldTab'].includes(component)).shift()
       if (field) {
         return field.name
       }
@@ -538,8 +545,15 @@ export default {
      * @returns {Array<{text: string, value: string, separator: boolean}>}
      */
     getResourceHeaders (resourceSettings) {
+      const resourceFields = this.getResourceFields('index', resourceSettings)
+
+      resourceFields.forEach((field, index) => {
+        if (field.is !== 'CFieldTab') { return }
+        resourceFields.splice(index, 1, ...field.params.fields)
+      })
+
       return [
-        ...this.getResourceFields(this.mode, resourceSettings).map(field => ({
+        ...resourceFields.filter(field => field.is !== 'CFieldTab').map(field => ({
           text: field.label,
           value: field.name,
           field,
@@ -551,6 +565,14 @@ export default {
           separator: false
         }
       ]
+    },
+    getResourceFormFields (resourceSettings) {
+      const resourceFields = this.getResourceFields(this.mode, resourceSettings)
+      resourceFields.forEach((field, index) => {
+        if (field.is !== 'CFieldTab') { return }
+        resourceFields.splice(index, 1, ...field.params.fields)
+      })
+      return resourceFields
     },
     /**
      * Map the model after fetch.
@@ -578,7 +600,16 @@ export default {
       const response = await this.$axios.$get(url)
       this.model = this.buildResourceModel(this.fields, get(response, this.settings.resourceWrapper, response))
       this.fields = this.fields.map((field) => {
-        field.value = get(response, field.name, field.defaultValue)
+        const path = this.settings.resourceWrapper ? `${this.settings.resourceWrapper}.${field.name}` : field.name
+        if (['CFieldTab'].includes(field.is)) {
+          field.params.fields = field.params.fields.map((f) => {
+            const path = this.settings.resourceWrapper ? `${this.settings.resourceWrapper}.${f.name}` : f.name
+            f.value = get(response, path, f.defaultValue)
+            return f
+          })
+          return field
+        }
+        field.value = get(response, path, field.defaultValue)
         return field
       })
     },
@@ -623,7 +654,7 @@ export default {
         meta: {
           sortBy,
           sortDesc,
-          currentPage,
+          currentPage: parseInt(currentPage),
           perPage,
           search,
           lastPage: get(result, 'meta.last_page', 1) || 1,
