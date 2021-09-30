@@ -33,6 +33,10 @@ export default {
       type: CrudResponse,
       required: true
     },
+    context: {
+      type: Object,
+      default: () => ({})
+    },
     value: {
       type: Object,
       default: () => ({
@@ -80,6 +84,7 @@ export default {
     attributes () {
       const bind = {
         params: this.value.params || {},
+        context: this.context,
         name: this.value.name || '',
         label: this.value.label || '',
         response: this.response,

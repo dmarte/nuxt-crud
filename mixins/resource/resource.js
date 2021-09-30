@@ -600,14 +600,16 @@ export default {
       const response = await this.$axios.$get(url)
       this.model = this.buildResourceModel(this.fields, get(response, this.settings.resourceWrapper, response))
       this.fields = this.fields.map((field) => {
+        const path = this.settings.resourceWrapper ? `${this.settings.resourceWrapper}.${field.name}` : field.name
         if (['CFieldTab'].includes(field.is)) {
           field.params.fields = field.params.fields.map((f) => {
-            f.value = get(response, f.name, f.defaultValue)
+            const path = this.settings.resourceWrapper ? `${this.settings.resourceWrapper}.${f.name}` : f.name
+            f.value = get(response, path, f.defaultValue)
             return f
           })
           return field
         }
-        field.value = get(response, field.name, field.defaultValue)
+        field.value = get(response, path, field.defaultValue)
         return field
       })
     },

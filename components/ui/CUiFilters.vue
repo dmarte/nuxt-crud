@@ -224,11 +224,11 @@ export default {
     onFilter (perPage = 15, sortBy = 'id', sortDesc = true) {
       const out = { perPage, sortBy, sortDesc }
       this.filterable.forEach((field) => {
-        if (isEmpty(field.value) && !isEmpty(field.defaultValue)) {
+        if (isEmpty(field.value) && (!isEmpty(field.defaultValue) || isBoolean(field.defaultValue))) {
           field.value = field.defaultValue
         }
 
-        if (isEmpty(field.value)) {
+        if (isEmpty(field.value) && !isBoolean(field.value)) {
           return
         }
 

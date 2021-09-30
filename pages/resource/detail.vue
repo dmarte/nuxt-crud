@@ -57,6 +57,7 @@
                   :value="field"
                   :response="response"
                   :loading="$fetchState.pending"
+                  :context='model'
                   dense
                 />
                 <v-divider v-if="fields.length > (index+1)" :key="`divider_${index}`" />
@@ -72,6 +73,7 @@
                     :index="index"
                     :mode="mode"
                     :value="field"
+                    :context='model'
                     :response="response"
                     :loading="$fetchState.pending"
                     dense
@@ -90,6 +92,7 @@
                 :response="response"
                 :loading="$fetchState.pending"
                 :mode="mode"
+                :context='model'
                 dense
               />
             </v-tab-item>
@@ -105,6 +108,7 @@
               :mode="mode"
               :value="field"
               :response="response"
+              :context='model'
               :loading="$fetchState.pending"
               dense
             />
