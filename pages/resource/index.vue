@@ -167,15 +167,19 @@ export default {
     }
   },
   async fetch () {
-    const {
-      collection,
-      meta
-    } = await this.paginate(
-      this.params(),
-      this.settings
-    )
-    this.collection = collection
-    this.meta = meta
+    try {
+      const {
+        collection,
+        meta
+      } = await this.paginate(
+        this.params(),
+        this.settings
+      )
+      this.collection = collection
+      this.meta = meta
+    } catch (e) {
+      this.$store.dispatch(this.settings.hooks.onIndexError, { exception: e, resource: this.settings })
+    }
   },
   computed: {
     headers () {
