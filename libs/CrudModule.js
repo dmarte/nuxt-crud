@@ -218,6 +218,16 @@ export default class CrudModule {
   }
 
   /**
+   * Dispatch a vuex action when an error accur on index.
+   * @param {String} vuexAction
+   * @returns {CrudModule}
+   */
+  dispatchOnIndexError(vuexAction) {
+    this.$options.hooks.onIndexError = vuexAction
+    return this
+  }
+
+  /**
    * Dispatch an action before update.
    * @param {String} vuexAction
    * @returns {CrudModule}
